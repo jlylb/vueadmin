@@ -1,6 +1,6 @@
 <template>
-  <el-dropdown trigger="click" class='international' @command="handleSetLanguage">
-    <div>
+  <el-dropdown trigger="click"  @command="handleSetLanguage">
+    <div class='short-item-icon'>
       <svg-icon class-name='international-icon' icon-class="language" />
     </div>
     <el-dropdown-menu slot="dropdown">
@@ -34,7 +34,16 @@ export default {
 .international-icon {
   font-size: 20px;
   cursor: pointer;
-  vertical-align: -5px!important;
+  /* vertical-align: -5px!important; */
+  fill: #fff;
+  width:100%;
+  height: 100%;
+}
+.short-item-icon{
+    height: 48px;
+    width:48px;
+    color: #fff;
+    margin: 16px;
 }
 </style>
 

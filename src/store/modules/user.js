@@ -13,7 +13,9 @@ const user = {
     roles: [],
     setting: {
       articlePlatform: []
-    }
+    },
+    companyName: '',
+    companyLogo: ''
   },
 
   mutations: {
@@ -40,6 +42,12 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_COMPANY_LOGO: (state, logopath) => {
+      state.companyLogo = logopath
+    },
+    SET_COMPANY_NAME: (state, companyName) => {
+      state.companyName = companyName
     }
   },
 
@@ -77,6 +85,8 @@ const user = {
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_COMPANY_LOGO', data.company_logo)
+          commit('SET_COMPANY_NAME', data.company_name)
           resolve(response)
         }).catch(error => {
           reject(error)

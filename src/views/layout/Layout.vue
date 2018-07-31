@@ -1,26 +1,31 @@
 <template>
   <div class="app-wrapper" :class="classObj">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
-    <sidebar class="sidebar-container"></sidebar>
-    <div class="main-container">
-      <navbar></navbar>
-      <tags-view></tags-view>
-      <app-main></app-main>
-    </div>
+    
+    
+      <sidebar class="sidebar-container"></sidebar>
+      <div class="main-container">
+       <navbar></navbar>
+        <!-- <tags-view></tags-view> -->
+        <breadcrumb class="breadcrumb-container"></breadcrumb>
+        <app-main></app-main>
+      </div>   
+
   </div>
 </template>
 
 <script>
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
-
+import Breadcrumb from '@/components/Breadcrumb'
 export default {
   name: 'layout',
   components: {
     Navbar,
     Sidebar,
     AppMain,
-    TagsView
+    TagsView,
+    Breadcrumb
   },
   mixins: [ResizeMixin],
   computed: {

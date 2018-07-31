@@ -1,4 +1,5 @@
 <template>
+<div>
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index)  in levelList" :key="item.path" v-if='item.meta.title'>
@@ -7,6 +8,7 @@
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
+</div>  
 </template>
 
 <script>
@@ -42,13 +44,18 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .app-breadcrumb.el-breadcrumb {
-    display: inline-block;
+    display: block;
     font-size: 14px;
-    line-height: 50px;
-    margin-left: 10px;
+    line-height: 40px;
+    margin:0 20px;
+    padding: 0 20px;
+    background-color: #28313c;
     .no-redirect {
-      color: #97a8be;
+      color: #fff;
       cursor: text;
+    }
+    a{
+      color:#fff
     }
   }
 </style>

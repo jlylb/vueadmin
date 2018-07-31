@@ -1,6 +1,8 @@
 <template>
   <div class="login-container">
 
+    <div id="canvascontainer" ref='can'></div>
+
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
 
       <div class="title-container">
@@ -27,27 +29,35 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="company_no">
+        <span class="svg-container">
+          <svg-icon icon-class="company" />
+        </span>
+        <el-input name="company_no" type="text"  v-model="loginForm.company_no" autoComplete="on"
+          :placeholder="$t('login.company_no')" />
+      </el-form-item>
+
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">{{$t('login.logIn')}}</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span>{{$t('login.username')}} : admin</span>
         <span>{{$t('login.password')}} : {{$t('login.any')}}</span>
       </div>
       <div class="tips">
         <span style="margin-right:18px;">{{$t('login.username')}} : editor</span>
         <span>{{$t('login.password')}} : {{$t('login.any')}}</span>
-      </div>
+      </div> -->
 
-      <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{$t('login.thirdparty')}}</el-button>
+      <!-- <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{$t('login.thirdparty')}}</el-button> -->
     </el-form>
 
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
-      {{$t('login.thirdpartyTips')}}
-      <br/>
-      <br/>
-      <br/>
-      <social-sign />
-    </el-dialog>
+    // <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
+    //   {{$t('login.thirdpartyTips')}}
+    //   <br/>
+    //   <br/>
+    //   <br/>
+    //   <social-sign />
+    // </el-dialog>
 
   </div>
 </template>
@@ -63,14 +73,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入账号'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码不得少于6位'))
       } else {
         callback()
       }
@@ -78,11 +88,13 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '1111111'
+        password: '123456',
+        company_no: 'qy123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        'company_no': [{ required: true, trigger: 'blur' }]
       },
       passwordType: 'password',
       loading: false,
@@ -137,14 +149,109 @@ export default {
   },
   destroyed() {
     // window.removeEventListener('hashchange', this.afterQRScan)
+  },
+  mounted() {
+    init.call(this)
   }
+}
+
+const init = function() {
+  container = document.createElement('div')
+  this.$refs.can.appendChild(container)
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000)
+  camera.position.z = 1000
+  scene = new THREE.Scene()
+  particles = new Array()
+  var PI2 = Math.PI * 2
+  var material = new THREE.ParticleCanvasMaterial({
+    color: 0x0078de,
+    program: function(context) {
+      context.beginPath()
+      context.arc(0, 0, 1, 0, PI2, true)
+      context.fill()
+    }
+  })
+  var i = 0
+  for (var ix = 0; ix < AMOUNTX; ix++) {
+    for (var iy = 0; iy < AMOUNTY; iy++) {
+      particle = particles[ i++ ] = new THREE.Particle(material)
+      particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2)
+      particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2)
+      scene.add(particle)
+    }
+  }
+  renderer = new THREE.CanvasRenderer()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  container.appendChild(renderer.domElement)
+  document.addEventListener('mousemove', onDocumentMouseMove, false)
+  //
+  window.addEventListener('resize', onWindowResize, false)
+  animate()
+}
+
+var SEPARATION = 100, AMOUNTX = 50, AMOUNTY = 50
+var container
+var camera, scene, renderer
+var particles, particle, count = 0
+var mouseX = 0, mouseY = 0
+var windowHalfX = window.innerWidth / 2
+var windowHalfY = window.innerHeight / 2
+
+function onWindowResize() {
+  windowHalfX = window.innerWidth / 2
+  windowHalfY = window.innerHeight / 2
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+}
+//
+function onDocumentMouseMove(event) {
+  mouseX = event.clientX - windowHalfX
+  mouseY = event.clientY - windowHalfY
+}
+function onDocumentTouchStart(event) {
+  if (event.touches.length === 1) {
+    event.preventDefault()
+    mouseX = event.touches[ 0 ].pageX - windowHalfX
+    mouseY = event.touches[ 0 ].pageY - windowHalfY
+  }
+}
+function onDocumentTouchMove(event) {
+  if (event.touches.length === 1) {
+    event.preventDefault()
+    mouseX = event.touches[ 0 ].pageX - windowHalfX
+    mouseY = event.touches[ 0 ].pageY - windowHalfY
+  }
+}
+//
+function animate() {
+  requestAnimationFrame(animate)
+  render()
+}
+function render() {
+  camera.position.x += (mouseX - camera.position.x) * 0.05
+  camera.position.y += (-mouseY - camera.position.y) * 0.05
+  camera.lookAt(scene.position)
+  var i = 0
+  for (var ix = 0; ix < AMOUNTX; ix++) {
+    for (var iy = 0; iy < AMOUNTY; iy++) {
+      particle = particles[ i++ ]
+      particle.position.y = (Math.sin((ix + count) * 0.3) * 50) + (Math.sin((iy + count) * 0.5) * 50)
+      particle.scale.x = particle.scale.y = (Math.sin((ix + count) * 0.3) + 1) * 2 + (Math.sin((iy + count) * 0.5) + 1) * 2
+    }
+  }
+  renderer.render(scene, camera)
+  count += 0.1
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;
-
+#canvascontainer{
+  position: absolute;
+  top: 0px;
+}
 /* reset element-ui css */
 .login-container {
   .el-input {
@@ -179,6 +286,9 @@ $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 
+body{
+  height: 100%;
+}
 .login-container {
   position: fixed;
   height: 100%;

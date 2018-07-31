@@ -60,14 +60,18 @@ export default {
     exportZip: 'Export Zip',
     theme: '换肤',
     clipboardDemo: 'Clipboard',
-    i18n: '国际化'
+    i18n: '国际化',
+    permissionList: '权限列表',
+    rolesList: '角色列表',
+    usersList: '用户列表'
   },
   navbar: {
     logOut: '退出登录',
     dashboard: '首页',
     github: '项目地址',
     screenfull: '全屏',
-    theme: '换肤'
+    theme: '换肤',
+    profile: '个人中心'
   },
   login: {
     title: '系统登录',
@@ -84,7 +88,15 @@ export default {
   },
   permission: {
     roles: '你的权限',
-    switchRoles: '切换权限'
+    switchRoles: '切换权限',
+    desc: '描述',
+    id: '序号',
+    date: '时间',
+    name: '权限名',
+    router: '路由',
+    avatar: '头像',
+    role: '角色',
+    username: '账号'
   },
   guide: {
     description: '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',

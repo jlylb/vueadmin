@@ -1,43 +1,53 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
-    <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+  <el-menu class="navbar" mode="horizontal" >
+    <div class='sub-navbar'>
 
-    <breadcrumb class="breadcrumb-container"></breadcrumb>
+ <div class='layout-left'>
+    <el-tooltip effect="dark" :content="'隐藏菜单'" placement="bottom">
+      <hamburger class="short-cut-menu" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+    </el-tooltip>
+
+    <short-cut></short-cut>
+ </div>  
+    <!-- <breadcrumb class="breadcrumb-container"></breadcrumb> -->
+
+    <!-- <div class='system-name'>{{ companyName }}</div> -->
+
+    <div class='layout-right'>
 
     <div class="right-menu">
-      <error-log class="errLog-container right-menu-item"></error-log>
+      <!-- <error-log class="errLog-container right-menu-item"></error-log> -->
+
 
       <el-tooltip effect="dark" :content="$t('navbar.screenfull')" placement="bottom">
-        <screenfull class="screenfull right-menu-item"></screenfull>
+        <screenfull class="short-cut-menu"></screenfull>
       </el-tooltip>
 
-      <lang-select class="international right-menu-item"></lang-select>
-
-      <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
+      <el-tooltip effect="dark" :content="'语言切换'" placement="bottom">
+        <lang-select class="international"></lang-select>
+      </el-tooltip>
+      <!-- <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
         <theme-picker class="theme-switch right-menu-item"></theme-picker>
-      </el-tooltip>
+      </el-tooltip> -->
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
-        <div class="avatar-wrapper">
+        <div class="avatar-wrapper short-cut-menu">
           <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
+          <router-link to="/permission/profile">
             <el-dropdown-item>
-              {{$t('navbar.dashboard')}}
+              {{$t('navbar.profile')}}
             </el-dropdown-item>
           </router-link>
-          <a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>
-              {{$t('navbar.github')}}
-            </el-dropdown-item>
-          </a>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">{{$t('navbar.logOut')}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+    </div>
+    </div>
     </div>
   </el-menu>
 </template>
@@ -50,6 +60,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import ShortCut from './ShortCut'
 
 export default {
   components: {
@@ -58,13 +69,21 @@ export default {
     ErrorLog,
     Screenfull,
     LangSelect,
-    ThemePicker
+    ThemePicker,
+    ShortCut
+  },
+  data() {
+    return {
+
+    }
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'name',
-      'avatar'
+      'avatar',
+      'companyLogo',
+      'companyName'
     ])
   },
   methods: {
@@ -81,15 +100,51 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .sub-navbar{
+    background-color: #28313c;
+    height: 80px;
+    background-image: none;
+    // padding-left: 20px;
+    display: flex;
+    @media screen and ( max-width: 768px ){
+      .short-cut{
+        transform: translate3d(-360px,0,0)
+      }
+      .layout-left{
+        display: inline-block;
+      }
+    }
+  }
+  .layout-right{
+    display: flex;
+    justify-content: flex-end;
+    width: 30%;
+  }
+  .layout-left{
+    display: flex;
+    width: 70%;
+  }
+  .short-cut-menu {
+    height: 48px;
+    width:48px;
+    color: #fff;
+    margin: 16px;
+  }
 .navbar {
-  height: 50px;
+  height: 80px;
   line-height: 50px;
   border-radius: 0px !important;
+  background-color: rgb(48, 65, 86);
+  color: #fff;
+  border-bottom: none;
+  margin-bottom: 20px;
+  padding: 0 20px;
   .hamburger-container {
     line-height: 58px;
     height: 50px;
     float: left;
     padding: 0 10px;
+    color: #fff;
   }
   .breadcrumb-container{
     float: left;
@@ -98,15 +153,17 @@ export default {
     display: inline-block;
     vertical-align: top;
   }
+
   .right-menu {
-    float: right;
-    height: 100%;
+    // float: right;
+    // height: 100%;
+    display: flex;
     &:focus{
      outline: none;
     }
     .right-menu-item {
-      display: inline-block;
-      margin: 0 8px;
+      // display: inline-block;
+      // margin: 0 8px;
     }
     .screenfull {
       height: 20px;
@@ -118,15 +175,15 @@ export default {
       vertical-align: 15px;
     }
     .avatar-container {
-      height: 50px;
-      margin-right: 30px;
+      // height: 50px;
+      // margin-right: 30px;
       .avatar-wrapper {
         cursor: pointer;
-        margin-top: 5px;
+        // margin-top: 5px;
         position: relative;
         .user-avatar {
-          width: 40px;
-          height: 40px;
+          width: 48px;
+          height: 48px;
           border-radius: 10px;
         }
         .el-icon-caret-bottom {

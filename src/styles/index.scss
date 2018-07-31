@@ -11,6 +11,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  background-color: rgb(48, 65, 86);
 }
 
 label {
@@ -190,4 +191,27 @@ code {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+// .el-form-item__label,
+// .el-pagination,
+// .el-pagination__jump,
+// .el-pagination__total {
+//   color: #fff
+// }
+
+.table-layout{
+  padding: 20px;
+  margin: 20px;
+  background-color: #28313c;
+  min-height: 900px;
+}
+
+.search-form-layout{
+  padding: 15px 10px;
+  margin: 0 0 20px 0;
+  background-color: #fff;
+  .el-form-item {
+    margin-bottom: 0;
+  }
 }

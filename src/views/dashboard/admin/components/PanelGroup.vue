@@ -1,46 +1,48 @@
 <template>
   <el-row class="panel-group" :gutter="40">
+    
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class='card-panel' @click="handleSetLineChartData('newVisitis')">
+      <div class='card-panel' @click="handleSetLineChartData('running')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="shebei" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">New Visits</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="102400" :duration="2600"></count-to>
+          <div class="card-panel-text" >设备总数</div>
+          <count-to class="card-panel-num" :startVal="0" :endVal="102400" :duration="2600" style="color: #ffff43"></count-to>
         </div>
       </div>
     </el-col>
+
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
+      <div class="card-panel" >
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
+          <svg-icon icon-class="running" class-name="card-panel-icon"/>
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Messages</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="81212" :duration="3000"></count-to>
+          <div class="card-panel-text">运行状态</div>
+          <div class='running'>良好</div>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('purchases')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
+          <svg-icon icon-class="baojing" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Purchases</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="9280" :duration="3200"></count-to>
+          <div class="card-panel-text">严重报警</div>
+          <count-to class="card-panel-num" :startVal="0" :endVal="9280" :duration="3200" style="color: #ff0000"></count-to>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shoppingCard">
-          <svg-icon icon-class="shoppingCard" class-name="card-panel-icon" />
+          <svg-icon icon-class="baojing" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Shoppings</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="13600" :duration="3600"></count-to>
+          <div class="card-panel-text">紧急报警</div>
+          <count-to class="card-panel-num" :startVal="0" :endVal="13600" :duration="3600" style="color: #ff0000"></count-to>
         </div>
       </div>
     </el-col>
@@ -56,13 +58,18 @@ export default {
   },
   methods: {
     handleSetLineChartData(type) {
-      this.$emit('handleSetLineChartData', type)
+      // this.$emit('handleSetLineChartData', type)
+      this.$router.push({ name: 'device_index' })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.running{
+  font-size: 20px;
+  color: green;
+}
 .panel-group {
   margin-top: 18px;
   .card-panel-col{
@@ -74,8 +81,8 @@ export default {
     font-size: 12px;
     position: relative;
     overflow: hidden;
-    color: #666;
-    background: #fff;
+    color: #fff;
+    background:rgb(40, 49, 60);
     box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
     border-color: rgba(0, 0, 0, .05);
     &:hover {
@@ -83,7 +90,7 @@ export default {
         color: #fff;
       }
       .icon-people {
-         background: #40c9c6;
+         background: #36a3f7;
       }
       .icon-message {
         background: #36a3f7;
@@ -92,7 +99,7 @@ export default {
         background: #f4516c;
       }
       .icon-shoppingCard {
-        background: #34bfa3
+        background: #f4ea2a
       }
     }
     .icon-people {
@@ -105,7 +112,7 @@ export default {
       color: #f4516c;
     }
     .icon-shoppingCard {
-      color: #34bfa3
+      color: #f4ea2a
     }
     .card-panel-icon-wrapper {
       float: left;
@@ -125,7 +132,7 @@ export default {
       margin-left: 0px;
       .card-panel-text {
         line-height: 18px;
-        color: rgba(0, 0, 0, 0.45);
+        color: #fff;
         font-size: 16px;
         margin-bottom: 12px;
       }

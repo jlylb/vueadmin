@@ -31,6 +31,20 @@ function filterAsyncRouter(asyncRouterMap, roles) {
   return accessedRouters
 }
 
+const _import = require('@/utils/_import_development')
+
+function genRoutes(routes) {
+  routes.forEach((item) => {
+    if (item.component && typeof item.component === 'string') {
+      item.component = _import(item.component)
+    }
+    if (item.children && item.children.length > 0) {
+      item.children = genRoutes(item.children)
+    }
+  })
+  return routes
+}
+
 const permission = {
   state: {
     routers: constantRouterMap,
@@ -45,14 +59,15 @@ const permission = {
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
-        let accessedRouters
-        if (roles.indexOf('admin') >= 0) {
-          accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        }
-        commit('SET_ROUTERS', accessedRouters)
+        // const { roles } = data
+        // let accessedRouters
+        // if (roles.indexOf('admin') >= 0) {
+        //   accessedRouters = asyncRouterMap
+        // } else {
+        //   accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        // }
+        // console.log(genRoutes(data))
+        commit('SET_ROUTERS', genRoutes(data))
         resolve()
       })
     }
