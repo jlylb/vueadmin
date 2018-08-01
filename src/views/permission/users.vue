@@ -64,58 +64,16 @@ export default {
       logo: [],
       formColumns: [
         { name: 'name', label: '用户名' },
-        {
-          name: 'status',
-          label: '消息等级',
-          type: 'select',
-          data: [
-            { value: 1, label: '一般' },
-            { value: 2, label: '警告' },
-            { value: 3, label: '严重' },
-            { value: 4, label: '紧急' },
-            { value: 5, label: '加急' }
-          ],
-          props: {
-            clearable: true,
-            placeholder: '请选择'
-          }
-        },
-        {
-          name: 'created_at',
-          label: '发送时间',
-          type: 'date'
-        },
-        {
-          name: 'logo',
-          label: '上传LOGO',
-          type: 'upload',
-          props: {
-            action: '/upload/create'
-          }
-
-        }
+        { name: 'email', label: '邮箱'},
+        { name: 'password', label: '密码', inputType: 'password', type: 'input'},
+        { name: 'password_confirmation', label: '确认密码', inputType: 'password', type: 'input'},
+        { name: 'role', label: '角色'},
       ],
       searchColumns: [
         { name: 'name', label: '用户名' },
         {
-          name: 'status',
-          label: '消息等级',
-          type: 'select',
-          data: [
-            { value: 1, label: '一般' },
-            { value: 2, label: '警告' },
-            { value: 3, label: '严重' },
-            { value: 4, label: '紧急' },
-            { value: 5, label: '加急' }
-          ],
-          props: {
-            clearable: true,
-            placeholder: '请选择'
-          }
-        },
-        {
           name: 'created_at',
-          label: '发送时间',
+          label: '创建时间',
           type: 'date'
         }
       ],

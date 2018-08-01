@@ -89,6 +89,18 @@ const userMap = {
           { path: 'line', component: 'charts/line', name: 'lineChart', meta: { title: 'lineChart', noCache: true }},
           { path: 'mixchart', component: 'charts/mixChart', name: 'mixChart', meta: { title: 'mixChart', noCache: true }}
         ]
+      }, {
+        path: '/menu',
+        component: 'layout/Layout',
+        redirect: '/menu/index',
+        name: 'menu',
+        meta: {
+          title: 'menu',
+          icon: 'chart'
+        },
+        children: [
+          { path: 'index', component: 'menu/index', name: 'menu_index', meta: { title: 'menu', noCache: true }}
+        ]
       },
       { path: '*', redirect: '/404', hidden: true }
 

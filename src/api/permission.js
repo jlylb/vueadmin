@@ -18,7 +18,7 @@ export function fetchPermission(id) {
 
 export function createPermission(data) {
   return request({
-    url: '/privillege/permission/create',
+    url: 'admin/permission',
     method: 'post',
     data
   })

@@ -1,7 +1,7 @@
 <template>
     <el-form  :model="formModel" class="my-form" :rules='rules'  label-width="100px"  :ref="formName">
         <el-form-item :label="myitem.label || myitem.name" v-for='myitem in formColumns' :key='myitem.name' :prop='myitem.name'>
-
+<slot :name='myitem.name' :data='myitem' :fmodel='formModel'>
             <el-input v-model="formModel[myitem.name]" v-if='!myitem.type || myitem.type=="input"' v-bind='myitem.props||{}' :type='myitem.inputType||"text"'></el-input>
 
             <el-select v-model="formModel[myitem.name]" v-if='myitem.type=="select"'  v-bind='myitem.props||{}'>
@@ -57,7 +57,7 @@
             <el-checkbox 
                 v-model="formModel[myitem.name]"
                 v-if='myitem.type=="checkbox"'
-                v-bind='myitem.props||{}'>{{ myitem.label }}</el-checkbox>
+                v-bind='myitem.props||{}'></el-checkbox>
 
             <upload-form-column
                 v-if='myitem.type=="upload"'
@@ -65,7 +65,7 @@
                 @remove-success='removeSuccess'
                 :upload-props='myitem.props || {}'>
             </upload-form-column>
-
+</slot>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -158,7 +158,9 @@ export default {
       this.formModel[fieldName] = ''
     },
     setFormModel(data) {
+      console.log()
       this.formModel = Object.assign(this.formModel, data)
+      console.log(this.formModel, 7777777777)
     },
     getForm() {
       return this.$refs[this.formName]
@@ -173,7 +175,7 @@ export default {
       items[item.name] = ''
     })
     this.formModel = Object.assign(items, this.formModel)
-    console.log(this.formRules, 6666666)
+    console.log(this.formModel, 6666666)
   }
 }
 </script>
