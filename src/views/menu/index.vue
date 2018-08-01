@@ -32,6 +32,20 @@
                       <el-input type="text" v-model="fmodel.meta.title" placeholder="请输入标题" class='meta' ></el-input>
                       <el-input type="text" v-model="fmodel.meta.icon" placeholder="请输入图标" class='meta'></el-input>
                   </template>
+             <template slot='route_name' slot-scope='{ data, fmodel }'>
+                <el-select 
+                v-model="fmodel[data.name]" 
+                v-if='data.type=="select"' 
+                @change='selectChange($event,data.data)' 
+                v-bind='data.props||{}'>
+                    <el-option
+                    v-for="item in data.data"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+              </template>
                 </my-form>
         </el-dialog>
     </div>
@@ -40,7 +54,8 @@
 <script>
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
-import { fetchList, createMenu, updateMenu, deleteMenu } from '@/api/menu'
+import { fetchList, createMenu, updateMenu, deleteMenu, fetchAllMenu, fetchMenu } from '@/api/menu'
+import { getPermissiones } from '@/api/permission'
 export default {
   components: { tableList, MyForm },
   data() {
@@ -49,11 +64,24 @@ export default {
       logo: [],
       dialogTitle: '',
       formColumns: [
-        { name: 'route_path', label: '路由路径' },
+        { name: 'name', label: '菜单名' },
         {
           name: 'route_name',
           label: '路由名称',
+          type: 'select',
+          selectChange: this.selectChange,
+          props: {
+            filterable: true,
+            remote: true,
+            remoteMethod: this.remoteRoute,
+            placeholder: '请输入路由名称',
+            style: { width: '500px'},
+          },
+          data: [
+
+          ]
         },
+        { name: 'route_path', label: '路由路径' },
         {
           name: 'component',
           label: '组件名称'
@@ -66,13 +94,75 @@ export default {
           name: 'meta',
           label: '组件属性'
         },
+        // {
+        //   name: 'pid',
+        //   label: '父菜单',
+        //   type: 'select',
+        //   props: {
+        //     filterable: true,
+        //     remote: true,
+        //     remoteMethod: this.remoteMethod,
+        //     style: { width: '500px'},
+        //   },
+        //   data: [
+        //     {value: 0, label: '根目录'}
+        //   ]
+        // },
         {
           name: 'pid',
           label: '父菜单',
-          type: 'select',
-          data: [
-            {value: 0, label: '根目录'}
-          ]
+          type: 'tree',
+          ref: 'tree1',
+          props: {
+          },
+          data: [{
+          label: '一级 1',
+          id: 1,
+          children: [{
+            label: '二级 1-1',
+            id: 2,
+            children: [{
+              label: '三级 1-1-1',
+              id: 3,
+            }]
+          }]
+        }, {
+          label: '一级 2',
+          id: 4,
+          children: [{
+            label: '二级 2-1',
+            id: 5,
+            children: [{
+              label: '三级 2-1-1',
+              id: 6,
+            }]
+          }, {
+            label: '二级 2-2',
+            id: 7,
+            children: [{
+              label: '三级 2-2-1',
+              id: 8,
+            }]
+          }]
+        }, {
+          label: '一级 3',
+          id: 9,
+          children: [{
+            label: '二级 3-1',
+            id: 10,
+            children: [{
+              label: '三级 3-1-1',
+              id: 11,
+            }]
+          }, {
+            label: '二级 3-2',
+id: 12,
+            children: [{
+              label: '三级 3-2-1',
+              id: 13,
+            }]
+          }]
+        }]
         },
 
       ],
@@ -108,7 +198,8 @@ export default {
         meta: {
           title: '',
           icon: ''
-        }
+        },
+        component: 'layout/Layout'
       }
     }
   },
@@ -138,14 +229,15 @@ export default {
       this.$nextTick(() => {
         
        this.$refs.dialogForm.resetForm()
-       console.log(data.meta,data)
        try{
         data.meta = data.meta && JSON.parse(data.meta) || this.formModel.meta
        }catch(e){
-        data.meta = this.formModel.meta
+        data.meta = data.meta
        }
-       console.log(data,'edit2')
+
        this.$refs.dialogForm.setFormModel(data)
+              console.log( this.$refs.dialogForm.$refs,4444444444)
+       this.$refs.dialogForm.$refs.tree1[0].setCheckedKeys([4])
       })
     },
     getList(query) {
@@ -173,10 +265,51 @@ export default {
 
     },
     dialogOpen(val) {
-
+      fetchAllMenu().then((res) => {
+        console.log(res)
+      })
       this.$nextTick(() => {
         console.log(this.$refs)
       })
+    },
+    remoteMethod() {
+      let columns = this.formColumns
+      columns.map((item)=> {
+        if(item.name=='pid') {
+          item.data = [
+            {value: 0, label: '根目录'},
+            {value: 1, label: '权限'},
+            {value: 2, label: 'abc'},
+          ]
+          return item
+        }
+      })
+      this.formColumns = columns
+    },
+    remoteRoute(query) {
+      getPermissiones(query, {}).then((res)=> {
+        console.log(res)
+        let columns = this.formColumns
+        columns.map((item)=> {
+          if(item.name=='route_name') {
+            item.data = res.data.data
+            return item
+          }
+        })
+        this.formColumns = columns
+      }).catch((res) => {
+        console.log(res)
+      })
+    },
+    selectChange(val, data) {
+      for(let key in data) {
+        if(data[key].value==val) {
+          this.$set(this.formModel, 'route_path', data[key].route_path)
+          this.$set(this.formModel, 'route_name', val)
+          console.log(this.formModel)
+          break
+        }
+      } 
     }
   },
   created() {

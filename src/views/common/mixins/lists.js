@@ -45,6 +45,9 @@ export default {
     },
     setColumns() {
       this.columns = []
+      if(this.data.length===0) {
+        return
+      }
       const firstData = this.data[0]
       firstData.action = ''
       let extract = {}

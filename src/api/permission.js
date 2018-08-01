@@ -31,3 +31,11 @@ export function updatePermission(data) {
     data
   })
 }
+
+export function getPermissiones(query, data) {
+  return request({
+    url: 'admin/permission/' + query + '/search',
+    method: 'get',
+    params: data
+  })
+}

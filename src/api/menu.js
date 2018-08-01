@@ -16,6 +16,8 @@ export function fetchNotice(id) {
   })
 }
 
+
+
 export function createMenu(data) {
   return request({
     url: 'admin/menu',
@@ -37,5 +39,19 @@ export function deleteMenu(data) {
     url: 'admin/menu/' + data.id,
     method: 'delete',
     params: data
+  })
+}
+
+export function fetchAllMenu() {
+  return request({
+    url: 'admin/menu/create',
+    method: 'get',
+  })
+}
+
+export function fetchMenu(id) {
+  return request({
+    url: 'admin/menu/show/' + id,
+    method: 'get',
   })
 }

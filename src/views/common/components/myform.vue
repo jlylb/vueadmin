@@ -4,7 +4,10 @@
 <slot :name='myitem.name' :data='myitem' :fmodel='formModel'>
             <el-input v-model="formModel[myitem.name]" v-if='!myitem.type || myitem.type=="input"' v-bind='myitem.props||{}' :type='myitem.inputType||"text"'></el-input>
 
-            <el-select v-model="formModel[myitem.name]" v-if='myitem.type=="select"'  v-bind='myitem.props||{}'>
+            <el-select 
+            v-model="formModel[myitem.name]" 
+            v-if='myitem.type=="select"' 
+            v-bind='myitem.props||{}'>
                 <el-option
                 v-for="item in myitem.data"
                 :key="item.value"
@@ -58,6 +61,18 @@
                 v-model="formModel[myitem.name]"
                 v-if='myitem.type=="checkbox"'
                 v-bind='myitem.props||{}'></el-checkbox>
+
+            <el-tree
+              :data="myitem.data"
+              :props="myitem.defaultProps"
+              node-key='id'
+              :ref='myitem.ref'
+              accordion
+              @node-click="handleNodeClick"
+              v-model="formModel[myitem.name]"
+              v-if='myitem.type=="tree"'
+              v-bind='myitem.props||{}'>
+            </el-tree>    
 
             <upload-form-column
                 v-if='myitem.type=="upload"'
@@ -167,9 +182,14 @@ export default {
     },
     setFormRules() {
 
+    },
+    handleNodeClick(data) {
+      console.log(data)
+      this.formModel.pid = data.id
     }
   },
   created() {
+    console.log(this.$refs)
     const items = {}
     this.formColumns.forEach((item) => {
       items[item.name] = ''
