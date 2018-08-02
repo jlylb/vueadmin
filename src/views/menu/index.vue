@@ -18,6 +18,12 @@
         <template slot-scope="{ data }" slot='status'>
             <el-tag> {{ data.status }} </el-tag>
         </template>
+        <template slot-scope="{ data }" slot='actionExtra'>
+              <el-button
+                size="mini"
+                type="success"
+                @click="handleButton(data)">按钮权限</el-button>
+        </template>
         </table-list>
         <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
             <my-form
@@ -49,16 +55,18 @@
               </template>
                 </my-form>
         </el-dialog>
+        <button-form ref='buttonDialog'></button-form>
     </div>
 </template>
 
 <script>
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
+import ButtonForm from '../common/components/dialogButton'
 import { fetchList, createMenu, updateMenu, deleteMenu, fetchAllMenu, fetchMenu } from '@/api/menu'
 import { getPermissiones } from '@/api/permission'
 export default {
-  components: { tableList, MyForm },
+  components: { tableList, MyForm, ButtonForm },
   data() {
     return {
       data: [],
@@ -273,6 +281,10 @@ export default {
       let formModel = this.$refs.dialogForm.getFormModel()
       this.$set(formModel, 'route_path', '')
       this.formModel = formModel
+    },
+    handleButton(data) {
+      this.$refs.buttonDialog.open(true)
+      console.log(data)
     }
   },
   created() {

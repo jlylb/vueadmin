@@ -30,6 +30,16 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
   {
+    path: '/role_ability/:role',
+    component:  () => import('@/views/permission/ability'),
+    name: 'permission_role_ability',
+    hidden: true,
+    meta: {
+      title: '角色权限'
+      // if do not set roles, means: this page does not require permission
+    }
+  },
+  {
     path: '',
     component: Layout,
     redirect: 'dashboard',
@@ -75,6 +85,7 @@ export const constantRouterMap = [
       name: 'device_index',
       meta: { title: '设备实时图', icon: 'running' }
     },
+
     {
       path: 'detail',
       component: () => import('@/views/device/detail'),

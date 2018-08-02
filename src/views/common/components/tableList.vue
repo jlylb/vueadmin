@@ -29,6 +29,8 @@
                 type="danger"
                 @click="handleDelete(scope.row)">删除</el-button>
             </slot>
+            <slot name='actionExtra' :data='scope.row' v-if='item.prop=="action"'>
+            </slot>
       </template>
     </el-table-column>
   </el-table>
