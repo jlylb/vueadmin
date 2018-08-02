@@ -36,7 +36,8 @@
                 <el-select 
                 v-model="fmodel[data.name]" 
                 v-if='data.type=="select"' 
-                @change='selectChange($event,data.data)' 
+                @change='selectChange($event,data.data)'
+                @clear='selectClear' 
                 v-bind='data.props||{}'>
                     <el-option
                     v-for="item in data.data"
@@ -65,17 +66,21 @@ export default {
       dialogTitle: '',
       formColumns: [
         { name: 'name', label: '菜单名' },
+        { name: 'hidden', label: '隐藏菜单', type: 'checkbox', props: {
+          trueLabel: 1, falseLabel: 0
+        } },
         {
           name: 'route_name',
           label: '路由名称',
           type: 'select',
-          selectChange: this.selectChange,
           props: {
             filterable: true,
             remote: true,
             remoteMethod: this.remoteRoute,
             placeholder: '请输入路由名称',
-            style: { width: '500px'},
+            class: 'select-route_name',
+            clearable: true,
+            allowCreate: true
           },
           data: [
 
@@ -94,75 +99,19 @@ export default {
           name: 'meta',
           label: '组件属性'
         },
-        // {
-        //   name: 'pid',
-        //   label: '父菜单',
-        //   type: 'select',
-        //   props: {
-        //     filterable: true,
-        //     remote: true,
-        //     remoteMethod: this.remoteMethod,
-        //     style: { width: '500px'},
-        //   },
-        //   data: [
-        //     {value: 0, label: '根目录'}
-        //   ]
-        // },
+
         {
           name: 'pid',
           label: '父菜单',
-          type: 'tree',
-          ref: 'tree1',
+          type: 'cascader',
+          ref: 'cascader1',
           props: {
+            class: 'cascader-pid',
+            changeOnSelect: true
           },
-          data: [{
-          label: '一级 1',
-          id: 1,
-          children: [{
-            label: '二级 1-1',
-            id: 2,
-            children: [{
-              label: '三级 1-1-1',
-              id: 3,
-            }]
-          }]
-        }, {
-          label: '一级 2',
-          id: 4,
-          children: [{
-            label: '二级 2-1',
-            id: 5,
-            children: [{
-              label: '三级 2-1-1',
-              id: 6,
-            }]
-          }, {
-            label: '二级 2-2',
-            id: 7,
-            children: [{
-              label: '三级 2-2-1',
-              id: 8,
-            }]
-          }]
-        }, {
-          label: '一级 3',
-          id: 9,
-          children: [{
-            label: '二级 3-1',
-            id: 10,
-            children: [{
-              label: '三级 3-1-1',
-              id: 11,
-            }]
-          }, {
-            label: '二级 3-2',
-id: 12,
-            children: [{
-              label: '三级 3-2-1',
-              id: 13,
-            }]
-          }]
-        }]
+          data: [
+
+          ]
         },
 
       ],
@@ -175,17 +124,20 @@ id: 12,
         }
       ],
       formRules: {
-        route_path: [
-          { required: true, message: '请输入路由路径', trigger: 'blur' }
-        ],
-        route_name: [
-          { required: true, message: '请输入路由名称', trigger: 'blur' }
-        ],
+        // route_path: [
+        //   { required: true, message: '请输入路由路径', trigger: 'blur' }
+        // ],
+        // route_name: [
+        //   { required: true, message: '请输入路由名称', trigger: 'blur' }
+        // ],
         component: [
           { required: true, message: '请输入组件名称', trigger: 'blur' }
         ]
       },
       columns: {
+        action: {
+          minWidth: '150px'
+        }
       },
       total: 0,
       search: {
@@ -194,13 +146,14 @@ id: 12,
       },
       editDialog: false,
       formModel: {
-        pid: 0,
+        pid: [0],
         meta: {
           title: '',
           icon: ''
         },
         component: 'layout/Layout'
-      }
+      },
+      editId: 0
     }
   },
   methods: {
@@ -218,6 +171,7 @@ id: 12,
     handleAdd() {
       this.editDialog = true
       this.dialogTitle = '添加'
+      this.editId = 0
       this.$nextTick(() => {
         this.$refs.dialogForm.resetForm()
       })
@@ -226,6 +180,7 @@ id: 12,
       console.log(data,'edit')
       this.editDialog = true
       this.dialogTitle = '编辑'
+      this.editId = data.id
       this.$nextTick(() => {
         
        this.$refs.dialogForm.resetForm()
@@ -234,10 +189,11 @@ id: 12,
        }catch(e){
         data.meta = data.meta
        }
-
+       let pid = data.path.split('-')
+       pid.pop()
+       data.pid = pid.map((item)=>+item)
        this.$refs.dialogForm.setFormModel(data)
-              console.log( this.$refs.dialogForm.$refs,4444444444)
-       this.$refs.dialogForm.$refs.tree1[0].setCheckedKeys([4])
+   
       })
     },
     getList(query) {
@@ -254,38 +210,38 @@ id: 12,
         let method = data.id?updateMenu:createMenu
         method(data)
         .then((res)=>{
+          console.log(res, 'save data success')
             this.$message({
                 type: 'success',
-                message: res.data.data.msg
+                message: res.data.msg
             })
             this.getList()
         })
         .catch((res)=>{
+          console.log(res, 'save data error')
         })
 
     },
     dialogOpen(val) {
-      fetchAllMenu().then((res) => {
+      let method = this.editId?fetchMenu:fetchAllMenu
+      method(this.editId).then((res) => {
         console.log(res)
+          let cascader = [{ label: '根目录', value: 0}]
+          let columns = this.formColumns
+          columns.map((item)=> {
+            if(item.name=='pid') {
+              cascader[0].children = res.data.data.pid
+              item.data = cascader
+              return item
+            }
+          })
+          this.formColumns = columns
       })
       this.$nextTick(() => {
         console.log(this.$refs)
       })
     },
-    remoteMethod() {
-      let columns = this.formColumns
-      columns.map((item)=> {
-        if(item.name=='pid') {
-          item.data = [
-            {value: 0, label: '根目录'},
-            {value: 1, label: '权限'},
-            {value: 2, label: 'abc'},
-          ]
-          return item
-        }
-      })
-      this.formColumns = columns
-    },
+
     remoteRoute(query) {
       getPermissiones(query, {}).then((res)=> {
         console.log(res)
@@ -302,14 +258,21 @@ id: 12,
       })
     },
     selectChange(val, data) {
+      let formModel = this.$refs.dialogForm.getFormModel()
       for(let key in data) {
         if(data[key].value==val) {
-          this.$set(this.formModel, 'route_path', data[key].route_path)
-          this.$set(this.formModel, 'route_name', val)
+          this.$set(formModel, 'route_path', data[key].route_path)
+          this.$set(formModel, 'route_name', val)
+          this.formModel = formModel
           console.log(this.formModel)
           break
         }
       } 
+    },
+    selectClear() {
+      let formModel = this.$refs.dialogForm.getFormModel()
+      this.$set(formModel, 'route_path', '')
+      this.formModel = formModel
     }
   },
   created() {
@@ -323,6 +286,9 @@ id: 12,
     }
     .meta {
       margin-bottom: 10px;  width: 30%;
+    }
+    .cascader-pid, .select-route_name {
+      width: 100%;
     }
 </style>
 

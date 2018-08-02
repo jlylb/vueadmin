@@ -24,7 +24,7 @@ export default {
       this.getList()
     },
     handleEdit(row) {
-      this.$emit('list-edit', row)
+      this.$emit('list-edit', { ...row })
     },
     handleView(row) {
       this.$emit('list-view', row)
@@ -45,7 +45,7 @@ export default {
     },
     setColumns() {
       this.columns = []
-      if(this.data.length===0) {
+      if (this.data.length === 0) {
         return
       }
       const firstData = this.data[0]

@@ -72,7 +72,15 @@
               v-model="formModel[myitem.name]"
               v-if='myitem.type=="tree"'
               v-bind='myitem.props||{}'>
-            </el-tree>    
+            </el-tree>   
+
+            <el-cascader
+              :options="myitem.data"
+              :ref='myitem.ref'
+              v-model="formModel[myitem.name]"
+              v-if='myitem.type=="cascader"'
+              v-bind='myitem.props||{}'>
+            </el-cascader> 
 
             <upload-form-column
                 v-if='myitem.type=="upload"'
@@ -173,9 +181,10 @@ export default {
       this.formModel[fieldName] = ''
     },
     setFormModel(data) {
-      console.log()
       this.formModel = Object.assign(this.formModel, data)
-      console.log(this.formModel, 7777777777)
+    },
+    getFormModel() {
+      return this.formModel
     },
     getForm() {
       return this.$refs[this.formName]

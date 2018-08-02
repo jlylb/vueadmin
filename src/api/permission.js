@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: 'admin/permission',
+    url: 'permission',
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function fetchPermission(id) {
 
 export function createPermission(data) {
   return request({
-    url: 'admin/permission',
+    url: 'permission',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function updatePermission(data) {
 
 export function getPermissiones(query, data) {
   return request({
-    url: 'admin/permission/' + query + '/search',
+    url: 'permission/' + query + '/search',
     method: 'get',
     params: data
   })

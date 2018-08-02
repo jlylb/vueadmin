@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: 'admin/users',
+    url: 'users',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function fetchRoles(id, query) {
   return request({
-    url: 'admin/user/roles/' + id,
+    url: 'user/roles/' + id,
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function fetchRoles(id, query) {
 
 export function saveRoles(data) {
   return request({
-    url: 'admin/user/roles/',
+    url: 'user/roles/',
     method: 'put',
     data
   })

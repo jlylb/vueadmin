@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: 'admin/roles',
+    url: 'roles',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function fetchRoleAlibity(role, query) {
   return request({
-    url: 'admin/roles/' + role + '/ability',
+    url: 'roles/' + role + '/ability',
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function fetchRoleAlibity(role, query) {
 
 export function saveRoleAlibity(role, data) {
   return request({
-    url: 'admin/roles/' + role + '/ability',
+    url: 'roles/' + role + '/ability',
     method: 'put',
     data
   })

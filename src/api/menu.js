@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: 'admin/menu',
+    url: 'menu',
     method: 'get',
     params: query
   })
@@ -16,11 +16,9 @@ export function fetchNotice(id) {
   })
 }
 
-
-
 export function createMenu(data) {
   return request({
-    url: 'admin/menu',
+    url: 'menu',
     method: 'post',
     data
   })
@@ -28,7 +26,7 @@ export function createMenu(data) {
 
 export function updateMenu(data) {
   return request({
-    url: 'admin/menu/' + data.id,
+    url: 'menu/' + data.id,
     method: 'put',
     data
   })
@@ -36,7 +34,7 @@ export function updateMenu(data) {
 
 export function deleteMenu(data) {
   return request({
-    url: 'admin/menu/' + data.id,
+    url: 'menu/' + data.id,
     method: 'delete',
     params: data
   })
@@ -44,14 +42,14 @@ export function deleteMenu(data) {
 
 export function fetchAllMenu() {
   return request({
-    url: 'admin/menu/create',
-    method: 'get',
+    url: 'menu/create',
+    method: 'get'
   })
 }
 
 export function fetchMenu(id) {
   return request({
-    url: 'admin/menu/show/' + id,
-    method: 'get',
+    url: 'menu/' + id,
+    method: 'get'
   })
 }
