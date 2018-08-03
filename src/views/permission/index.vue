@@ -47,7 +47,7 @@ export default {
         {
           name: 'title',
           label: '权限描述'
-        },
+        }
         // {
         //   name: 'entity_type',
         //   label: '模型'
@@ -63,7 +63,7 @@ export default {
         // }
       ],
       searchColumns: [
-        { name: 'name', label: '权限名', props: { clearable: true } },
+        { name: 'name', label: '权限名', props: { clearable: true }},
         {
           name: 'created_at',
           label: '时间',
@@ -112,9 +112,8 @@ export default {
       this.editDialog = true
       this.dialogTitle = '编辑'
       this.$nextTick(() => {
-        
-       this.$refs.dialogForm.resetForm()
-       this.$refs.dialogForm.setFormModel(data)
+        this.$refs.dialogForm.resetForm()
+        this.$refs.dialogForm.setFormModel(data)
       })
     },
     getList(query) {
@@ -127,19 +126,18 @@ export default {
       })
     },
     saveData(data) {
-        this.editDialog = false
-        let method = data.id ? updatePermission : createPermission
-        method(data)
-        .then((res)=>{
-            this.$message({
-                type: 'success',
-                message: res.data.msg
-            })
-            this.getList()
+      this.editDialog = false
+      const method = data.id ? updatePermission : createPermission
+      method(data)
+        .then((res) => {
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+          this.getList()
         })
-        .catch((res)=>{
+        .catch((res) => {
         })
-
     },
     dialogOpen(val) {
       this.$nextTick(() => {

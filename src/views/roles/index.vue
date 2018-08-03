@@ -58,11 +58,11 @@ export default {
       dialogTitle: '',
       formColumns: [
         { name: 'name', label: '角色名' },
-        { name: 'title', label: '角色描述' },
+        { name: 'title', label: '角色描述' }
 
       ],
       searchColumns: [
-        { name: 'name', label: '角色名', props: { clearable: true } },
+        { name: 'name', label: '角色名', props: { clearable: true }},
         {
           name: 'created_at',
           label: '发送时间',
@@ -134,8 +134,8 @@ export default {
       })
     },
     saveData(data) {
-        let method = data.id?updateRole:createRole
-        method(data).then((res) => {
+      const method = data.id ? updateRole : createRole
+      method(data).then((res) => {
         this.editDialog = false
         this.$message({
           type: 'success',

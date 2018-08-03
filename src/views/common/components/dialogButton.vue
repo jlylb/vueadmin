@@ -31,8 +31,8 @@ export default {
     return {
       isShowDialog: false,
       formModel: {
-        button:[
-          {label: '', value: ''}
+        button: [
+          { label: '', value: '' }
         ]
       },
       id: null,
@@ -44,11 +44,11 @@ export default {
       this.isShowDialog = bool
       this.id = data.id
       this.title = data.name
-      if(data.buttons) {
+      if (data.buttons) {
         this.formModel.button = this.getFormatData(data)
-      }else{
+      } else {
         this.formModel.button = [
-          {label: '', value: ''}
+          { label: '', value: '' }
         ]
       }
     },
@@ -59,7 +59,7 @@ export default {
     },
     handleDel(key) {
       console.log(key)
-      this.formModel.button.splice(key,1)
+      this.formModel.button.splice(key, 1)
     },
     handleSave() {
       this.$refs.buttonForm.validate((valid) => {
@@ -69,10 +69,10 @@ export default {
             console.log(res)
             this.isShowDialog = false
             this.$message({
-                type: 'success',
-                message: res.data.msg
+              type: 'success',
+              message: res.data.msg
             })
-            let meta = this.formatModel(this.formModel.button)
+            const meta = this.formatModel(this.formModel.button)
             this.$store.commit('SET_META', meta)
             this.$parent.getList()
             console.log(this.$parent)
@@ -84,9 +84,9 @@ export default {
       })
     },
     formatModel(data) {
-      let result = {}
-      data.forEach((item)=>{
-        if(item.label && item.value) {
+      const result = {}
+      data.forEach((item) => {
+        if (item.label && item.value) {
           result[item.label] = item.value
         }
       })
@@ -94,21 +94,21 @@ export default {
     },
     getFormatData(data) {
       let buttons = []
-      try{
-        if(data.buttons) {
-          let result = JSON.parse(data.buttons)
-          for(let k in result) {
+      try {
+        if (data.buttons) {
+          const result = JSON.parse(data.buttons)
+          for (const k in result) {
             buttons.push({ label: k, value: result[k] })
           }
         } else {
           buttons = this.formModel.button
         }
-       }catch(e){
+      } catch (e) {
         buttons = this.formModel.button
-       }
-       return buttons
+      }
+      return buttons
     },
-    handleOpen(){},
+    handleOpen() {}
   }
 }
 </script>

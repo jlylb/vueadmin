@@ -66,14 +66,14 @@ import MyForm from '../common/components/myform'
 import ButtonForm from '../common/components/dialogButton'
 import { fetchList, createMenu, updateMenu, deleteMenu, fetchAllMenu, fetchMenu } from '@/api/menu'
 import { getPermissiones } from '@/api/permission'
-import ability  from '@/directive/ability/index.js'
+import ability from '@/directive/ability/index.js'
 import { mapGetters } from 'vuex'
 export default {
   components: { tableList, MyForm, ButtonForm },
   directives: { ability },
   computed: {
     ...mapGetters([
-      'meta',
+      'meta'
     ])
   },
   data() {
@@ -85,7 +85,7 @@ export default {
         { name: 'name', label: '菜单名' },
         { name: 'hidden', label: '隐藏菜单', type: 'checkbox', props: {
           trueLabel: 1, falseLabel: 0
-        } },
+        }},
         {
           name: 'route_name',
           label: '路由名称',
@@ -129,11 +129,11 @@ export default {
           data: [
 
           ]
-        },
+        }
 
       ],
       searchColumns: [
-        { name: 'route_name', label: '路由名称', props: { clearable: true } },
+        { name: 'route_name', label: '路由名称', props: { clearable: true }},
         {
           name: 'created_at',
           label: '创建时间',
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     handleDelete(data) {
-      deleteMenu({id: data.id}).then((res) => {
+      deleteMenu({ id: data.id }).then((res) => {
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -194,23 +194,21 @@ export default {
       })
     },
     handleEdit(data) {
-      console.log(data,'edit')
+      console.log(data, 'edit')
       this.editDialog = true
       this.dialogTitle = '编辑'
       this.editId = data.id
       this.$nextTick(() => {
-        
-       this.$refs.dialogForm.resetForm()
-       try{
-        data.meta = data.meta && JSON.parse(data.meta) || this.formModel.meta
-       }catch(e){
-        data.meta = data.meta
-       }
-       let pid = data.path.split('-')
-       pid.pop()
-       data.pid = pid.map((item)=>+item)
-       this.$refs.dialogForm.setFormModel(data)
-   
+        this.$refs.dialogForm.resetForm()
+        try {
+          data.meta = data.meta && JSON.parse(data.meta) || this.formModel.meta
+        } catch (e) {
+          data.meta = data.meta
+        }
+        const pid = data.path.split('-')
+        pid.pop()
+        data.pid = pid.map((item) => +item)
+        this.$refs.dialogForm.setFormModel(data)
       })
     },
     getList(query) {
@@ -223,36 +221,35 @@ export default {
       })
     },
     saveData(data) {
-        this.editDialog = false
-        let method = data.id?updateMenu:createMenu
-        method(data)
-        .then((res)=>{
+      this.editDialog = false
+      const method = data.id ? updateMenu : createMenu
+      method(data)
+        .then((res) => {
           console.log(res, 'save data success')
-            this.$message({
-                type: 'success',
-                message: res.data.msg
-            })
-            this.getList()
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+          this.getList()
         })
-        .catch((res)=>{
+        .catch((res) => {
           console.log(res, 'save data error')
         })
-
     },
     dialogOpen(val) {
-      let method = this.editId?fetchMenu:fetchAllMenu
+      const method = this.editId ? fetchMenu : fetchAllMenu
       method(this.editId).then((res) => {
         console.log(res)
-          let cascader = [{ label: '根目录', value: 0}]
-          let columns = this.formColumns
-          columns.map((item)=> {
-            if(item.name=='pid') {
-              cascader[0].children = res.data.data.pid
-              item.data = cascader
-              return item
-            }
-          })
-          this.formColumns = columns
+        const cascader = [{ label: '根目录', value: 0 }]
+        const columns = this.formColumns
+        columns.map((item) => {
+          if (item.name == 'pid') {
+            cascader[0].children = res.data.data.pid
+            item.data = cascader
+            return item
+          }
+        })
+        this.formColumns = columns
       })
       this.$nextTick(() => {
         console.log(this.$refs)
@@ -260,11 +257,11 @@ export default {
     },
 
     remoteRoute(query) {
-      getPermissiones(query, {}).then((res)=> {
+      getPermissiones(query, {}).then((res) => {
         console.log(res)
-        let columns = this.formColumns
-        columns.map((item)=> {
-          if(item.name=='route_name') {
+        const columns = this.formColumns
+        columns.map((item) => {
+          if (item.name == 'route_name') {
             item.data = res.data.data
             return item
           }
@@ -275,24 +272,24 @@ export default {
       })
     },
     selectChange(val, data) {
-      let formModel = this.$refs.dialogForm.getFormModel()
-      for(let key in data) {
-        if(data[key].value==val) {
+      const formModel = this.$refs.dialogForm.getFormModel()
+      for (const key in data) {
+        if (data[key].value == val) {
           this.$set(formModel, 'route_path', data[key].route_path)
           this.$set(formModel, 'route_name', val)
           this.formModel = formModel
           console.log(this.formModel)
           break
         }
-      } 
+      }
     },
     selectClear() {
-      let formModel = this.$refs.dialogForm.getFormModel()
+      const formModel = this.$refs.dialogForm.getFormModel()
       this.$set(formModel, 'route_path', '')
       this.formModel = formModel
     },
     handleButton(data) {
-      this.$refs.buttonDialog.open(true,data)
+      this.$refs.buttonDialog.open(true, data)
       console.log(data)
     }
   },

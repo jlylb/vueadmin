@@ -72,16 +72,16 @@ export default {
       logo: [],
       formColumns: [
         { name: 'name', label: '用户名' },
-        { name: 'email', label: '邮箱'},
-        { name: 'password', label: '密码', inputType: 'password', type: 'input'},
-        { name: 'password_confirmation', label: '确认密码', inputType: 'password', type: 'input'}
+        { name: 'email', label: '邮箱' },
+        { name: 'password', label: '密码', inputType: 'password', type: 'input' },
+        { name: 'password_confirmation', label: '确认密码', inputType: 'password', type: 'input' }
       ],
       editFormColumns: [
         { name: 'name', label: '用户名' },
-        { name: 'email', label: '邮箱'},
+        { name: 'email', label: '邮箱' }
       ],
       searchColumns: [
-        { name: 'name', label: '用户名', props: { clearable: true } },
+        { name: 'name', label: '用户名', props: { clearable: true }},
         {
           name: 'created_at',
           label: '创建时间',
@@ -90,19 +90,19 @@ export default {
       ],
       formRules: {
         name: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         email: [
           { required: true, message: '邮箱不能为空', trigger: 'blur' },
           { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-        ],
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
       },
       editFormRules: {
         name: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         email: [
           { required: true, message: '邮箱不能为空', trigger: 'blur' },
@@ -131,7 +131,7 @@ export default {
           ]
         }
       ],
-      dialogTitle: '',
+      dialogTitle: ''
     }
   },
   methods: {
@@ -174,7 +174,7 @@ export default {
       })
     },
     saveData(data) {
-      let method = data.id?updateUser:createUser
+      const method = data.id ? updateUser : createUser
       method(data).then((res) => {
         console.log(res)
         this.addDialog = false
