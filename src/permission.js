@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
           // const roles = res.data.roles // note: roles must be a array! such as: ['editor','develop']
-          const myroutes = res.data.routes || []
+          const myroutes = res.data || []
           store.dispatch('GenerateRoutes', myroutes).then(() => { // 根据roles权限生成可访问的路由表
             router.addRoutes(store.getters.addRouters)
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
@@ -61,6 +61,8 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to) => {
+  console.log(to)
+  store.commit('SET_META', to.meta)
   NProgress.done() // finish progress bar
 })

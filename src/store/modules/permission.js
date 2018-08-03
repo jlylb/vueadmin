@@ -38,6 +38,9 @@ function genRoutes(routes) {
     if (item.component && typeof item.component === 'string') {
       item.component = _import(item.component)
     }
+    if (item.meta && item.buttons) {
+      item.meta = Object.assign(item.meta, JSON.parse(item.buttons))
+    }
     if (item.children && item.children.length > 0) {
       item.children = genRoutes(item.children)
     }
@@ -48,12 +51,20 @@ function genRoutes(routes) {
 const permission = {
   state: {
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
+    abilities: [],
+    meta: {}
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
       state.routers = constantRouterMap.concat(routers)
+    },
+    SET_ABILITIES: (state, abilities) => {
+      state.abilities = abilities
+    },
+    SET_META: (state, meta) => {
+      state.meta = meta
     }
   },
   actions: {
@@ -67,7 +78,8 @@ const permission = {
         //   accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         // }
         // console.log(genRoutes(data))
-        commit('SET_ROUTERS', genRoutes(data))
+        commit('SET_ROUTERS', genRoutes(data.routes))
+        commit('SET_ABILITIES', data.ability)
         resolve()
       })
     }

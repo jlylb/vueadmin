@@ -26,8 +26,8 @@ export function createPermission(data) {
 
 export function updatePermission(data) {
   return request({
-    url: '/privillege/permission/update',
-    method: 'putch',
+    url: 'permission/' + data.id,
+    method: 'put',
     data
   })
 }
@@ -37,5 +37,12 @@ export function getPermissiones(query, data) {
     url: 'permission/' + query + '/search',
     method: 'get',
     params: data
+  })
+}
+
+export function deletePermission(data) {
+  return request({
+    url: 'permission/' + data.id,
+    method: 'delete'
   })
 }

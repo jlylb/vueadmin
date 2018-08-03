@@ -53,3 +53,11 @@ export function fetchMenu(id) {
     method: 'get'
   })
 }
+
+export function createButtons(id, data) {
+  return request({
+    url: 'menu/' + id + '/buttons',
+    method: 'post',
+    data
+  })
+}

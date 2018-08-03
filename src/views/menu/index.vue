@@ -13,7 +13,7 @@
             <el-button
             type="primary"
             icon='el-icon-circle-plus-outline'
-            @click="handleAdd">添加</el-button>
+            @click="handleAdd" v-ability='meta.edit||""'>添加</el-button>
         </template>
         <template slot-scope="{ data }" slot='status'>
             <el-tag> {{ data.status }} </el-tag>
@@ -56,6 +56,7 @@
                 </my-form>
         </el-dialog>
         <button-form ref='buttonDialog'></button-form>
+
     </div>
 </template>
 
@@ -65,8 +66,16 @@ import MyForm from '../common/components/myform'
 import ButtonForm from '../common/components/dialogButton'
 import { fetchList, createMenu, updateMenu, deleteMenu, fetchAllMenu, fetchMenu } from '@/api/menu'
 import { getPermissiones } from '@/api/permission'
+import ability  from '@/directive/ability/index.js'
+import { mapGetters } from 'vuex'
 export default {
   components: { tableList, MyForm, ButtonForm },
+  directives: { ability },
+  computed: {
+    ...mapGetters([
+      'meta',
+    ])
+  },
   data() {
     return {
       data: [],
@@ -124,7 +133,7 @@ export default {
 
       ],
       searchColumns: [
-        { name: 'route_name', label: '路由名称' },
+        { name: 'route_name', label: '路由名称', props: { clearable: true } },
         {
           name: 'created_at',
           label: '创建时间',
@@ -144,7 +153,7 @@ export default {
       },
       columns: {
         action: {
-          minWidth: '150px'
+          minWidth: '200px'
         }
       },
       total: 0,
@@ -283,7 +292,7 @@ export default {
       this.formModel = formModel
     },
     handleButton(data) {
-      this.$refs.buttonDialog.open(true)
+      this.$refs.buttonDialog.open(true,data)
       console.log(data)
     }
   },

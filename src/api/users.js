@@ -34,7 +34,7 @@ export function fetchUser(id) {
 
 export function createUser(data) {
   return request({
-    url: '/privillege/user/create',
+    url: 'users',
     method: 'post',
     data
   })
@@ -42,8 +42,15 @@ export function createUser(data) {
 
 export function updateUser(data) {
   return request({
-    url: '/privillege/user/update',
-    method: 'putch',
+    url: 'users/' + data.id,
+    method: 'put',
     data
+  })
+}
+
+export function deleteUser(data) {
+  return request({
+    url: 'users/' + data.id,
+    method: 'delete'
   })
 }

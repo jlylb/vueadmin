@@ -9,32 +9,30 @@
         @list-data='getList'
         @list-edit='handleEdit'
         @list-delete='handleDelete'>
+        <template  slot='add_search_button'>
+            <el-button
+            type="primary"
+            icon='el-icon-circle-plus-outline'
+            @click="handleAdd">添加</el-button>
+        </template>
         <template slot-scope="{ data }" slot='status'>
             <el-tag> {{ data.status }} </el-tag>
         </template>
-        <template slot='action' slot-scope="{ data }">
-            <el-button
-            size="mini"
-            type="primary"
-            @click="handleEdit(data)">编辑</el-button>
-            <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(data)">删除</el-button>
+        <template slot='actionExtra' slot-scope="{ data }">
             <el-button
             size="mini"
             type="success"
             @click="handleRoleAbility(data)">授权</el-button>
         </template>
         </table-list>
-        <el-dialog title="编辑" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
             <my-form
                 class="my-form"
                 ref='dialogForm'
                 @do-form='saveData'
                 :form-rules='formRules'
-                :default-files='logo'
-                :form-columns='formColumns'></my-form>
+                :pform-model='userFormModel'
+                :pform-columns='formColumns'></my-form>
         </el-dialog>
         <el-dialog title="角色授权" :visible.sync="roleDialog" @open='roleDialogOpen'>
             <my-form
@@ -50,64 +48,21 @@
 <script>
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
-import { fetchList, fetchRoleAlibity } from '@/api/roles'
+import { fetchList, fetchRoleAlibity, createRole, updateRole, deleteRole } from '@/api/roles'
 export default {
   components: { tableList, MyForm },
   data() {
     return {
       data: [],
       logo: [],
+      dialogTitle: '',
       formColumns: [
-        { name: 'name', label: '用户名' },
-        {
-          name: 'status',
-          label: '消息等级',
-          type: 'select',
-          data: [
-            { value: 1, label: '一般' },
-            { value: 2, label: '警告' },
-            { value: 3, label: '严重' },
-            { value: 4, label: '紧急' },
-            { value: 5, label: '加急' }
-          ],
-          props: {
-            clearable: true,
-            placeholder: '请选择'
-          }
-        },
-        {
-          name: 'created_at',
-          label: '发送时间',
-          type: 'date'
-        },
-        {
-          name: 'logo',
-          label: '上传LOGO',
-          type: 'upload',
-          props: {
-            action: '/upload/create'
-          }
+        { name: 'name', label: '角色名' },
+        { name: 'title', label: '角色描述' },
 
-        }
       ],
       searchColumns: [
-        { name: 'name', label: '用户名' },
-        {
-          name: 'status',
-          label: '消息等级',
-          type: 'select',
-          data: [
-            { value: 1, label: '一般' },
-            { value: 2, label: '警告' },
-            { value: 3, label: '严重' },
-            { value: 4, label: '紧急' },
-            { value: 5, label: '加急' }
-          ],
-          props: {
-            clearable: true,
-            placeholder: '请选择'
-          }
-        },
+        { name: 'name', label: '角色名', props: { clearable: true } },
         {
           name: 'created_at',
           label: '发送时间',
@@ -116,10 +71,10 @@ export default {
       ],
       formRules: {
         name: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: '请输入角色名', trigger: 'blur' }
         ],
-        status: [
-          { required: true, message: '请输入消息等级', trigger: 'blur' }
+        title: [
+          { required: true, message: '请输入角色描述', trigger: 'blur' }
         ]
       },
       columns: {
@@ -135,14 +90,23 @@ export default {
       editDialog: false,
       roleDialog: false,
       roleFormModel: {},
+      userFormModel: {},
       roleColumns: [
 
       ]
     }
   },
   methods: {
+    handleAdd(data) {
+      this.editDialog = true
+      this.dialogTitle = '添加'
+      this.editId = 0
+      this.$nextTick(() => {
+        this.$refs.dialogForm.resetForm()
+      })
+    },
     handleDelete(data) {
-      deleteNotice(data).then((res) => {
+      deleteRole(data).then((res) => {
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -155,6 +119,7 @@ export default {
     handleEdit(data) {
       // console.log(data)
       this.editDialog = true
+      this.userFormModel = data
       this.$nextTick(() => {
         this.$refs.dialogForm.resetForm()
       })
@@ -168,10 +133,17 @@ export default {
 
       })
     },
-    saveData() {
-      this.$message({
-        type: 'success',
-        message: '保存成功'
+    saveData(data) {
+        let method = data.id?updateRole:createRole
+        method(data).then((res) => {
+        this.editDialog = false
+        this.$message({
+          type: 'success',
+          message: '保存成功'
+        })
+        this.getList()
+      }).catch((res) => {
+        console.log(res)
       })
     },
     dialogOpen(val) {
@@ -211,6 +183,8 @@ export default {
 }
 </script>
 <style lang="scss">
-
+   .table-layout .my-form .el-input{
+        width: 50%;
+    }
 </style>
 

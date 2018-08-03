@@ -1,5 +1,5 @@
 <template>
-        <el-dialog title="按钮权限设置" :visible.sync="isShowDialog">
+        <el-dialog :title="title+'按钮权限设置'" :visible.sync="isShowDialog" @open='handleOpen'>
           <div class='button-top'>
           <el-button
               type="primary"
@@ -25,18 +25,32 @@
 </template>
 
 <script>
+import { createButtons } from '@/api/menu'
 export default {
   data() {
     return {
       isShowDialog: false,
-      formModel: {button:[
-        {label: '', value: ''}
-      ]}
+      formModel: {
+        button:[
+          {label: '', value: ''}
+        ]
+      },
+      id: null,
+      title: null
     }
   },
   methods: {
-    open(bool) {
+    open(bool, data) {
       this.isShowDialog = bool
+      this.id = data.id
+      this.title = data.name
+      if(data.buttons) {
+        this.formModel.button = this.getFormatData(data)
+      }else{
+        this.formModel.button = [
+          {label: '', value: ''}
+        ]
+      }
     },
     handleAdd() {
       this.formModel.button.push({
@@ -50,14 +64,51 @@ export default {
     handleSave() {
       this.$refs.buttonForm.validate((valid) => {
         if (valid) {
-          console.log(this.formModel)
-          this.$emit('do-button-form', this.formModel)
+          // this.$emit('do-button-form', this.formModel)
+          createButtons(this.id, this.formModel).then((res) => {
+            console.log(res)
+            this.isShowDialog = false
+            this.$message({
+                type: 'success',
+                message: res.data.msg
+            })
+            let meta = this.formatModel(this.formModel.button)
+            this.$store.commit('SET_META', meta)
+            this.$parent.getList()
+            console.log(this.$parent)
+          })
         } else {
           console.log('error submit!!')
           return false
         }
       })
-    }
+    },
+    formatModel(data) {
+      let result = {}
+      data.forEach((item)=>{
+        if(item.label && item.value) {
+          result[item.label] = item.value
+        }
+      })
+      return result
+    },
+    getFormatData(data) {
+      let buttons = []
+      try{
+        if(data.buttons) {
+          let result = JSON.parse(data.buttons)
+          for(let k in result) {
+            buttons.push({ label: k, value: result[k] })
+          }
+        } else {
+          buttons = this.formModel.button
+        }
+       }catch(e){
+        buttons = this.formModel.button
+       }
+       return buttons
+    },
+    handleOpen(){},
   }
 }
 </script>

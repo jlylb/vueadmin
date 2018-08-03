@@ -34,7 +34,7 @@ export function fetchRole(id) {
 
 export function createRole(data) {
   return request({
-    url: '/privillege/role/create',
+    url: 'roles',
     method: 'post',
     data
   })
@@ -42,8 +42,16 @@ export function createRole(data) {
 
 export function updateRole(data) {
   return request({
-    url: '/privillege/role/update',
-    method: 'putch',
+    url: 'roles/' + data.id,
+    method: 'put',
+    data
+  })
+}
+
+export function deleteRole(data) {
+  return request({
+    url: 'roles/' + data.id,
+    method: 'delete',
     data
   })
 }

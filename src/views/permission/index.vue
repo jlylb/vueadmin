@@ -34,7 +34,7 @@
 <script>
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
-import { fetchList, createPermission } from '@/api/permission'
+import { fetchList, createPermission, updatePermission, deletePermission } from '@/api/permission'
 export default {
   components: { tableList, MyForm },
   data() {
@@ -63,7 +63,7 @@ export default {
         // }
       ],
       searchColumns: [
-        { name: 'name', label: '权限名' },
+        { name: 'name', label: '权限名', props: { clearable: true } },
         {
           name: 'created_at',
           label: '时间',
@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     handleDelete(data) {
-      deleteNotice(data).then((res) => {
+      deletePermission(data).then((res) => {
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -108,7 +108,7 @@ export default {
       })
     },
     handleEdit(data) {
-      // console.log(data)
+      console.log(data)
       this.editDialog = true
       this.dialogTitle = '编辑'
       this.$nextTick(() => {
@@ -128,12 +128,14 @@ export default {
     },
     saveData(data) {
         this.editDialog = false
-        createPermission(data)
+        let method = data.id ? updatePermission : createPermission
+        method(data)
         .then((res)=>{
             this.$message({
                 type: 'success',
-                message: res.data.data.msg
+                message: res.data.msg
             })
+            this.getList()
         })
         .catch((res)=>{
         })
