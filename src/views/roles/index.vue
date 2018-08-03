@@ -100,6 +100,7 @@ export default {
     handleAdd(data) {
       this.editDialog = true
       this.dialogTitle = '添加'
+      this.userFormModel = {}
       this.editId = 0
       this.$nextTick(() => {
         this.$refs.dialogForm.resetForm()
@@ -117,11 +118,13 @@ export default {
       })
     },
     handleEdit(data) {
-      // console.log(data)
+      console.log(data)
       this.editDialog = true
-      this.userFormModel = data
+      this.dialogTitle = '编辑'
+      
       this.$nextTick(() => {
         this.$refs.dialogForm.resetForm()
+        this.userFormModel = data
       })
     },
     getList(query) {

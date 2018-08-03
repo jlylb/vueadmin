@@ -162,14 +162,7 @@ export default {
         pageSize: 10
       },
       editDialog: false,
-      formModel: {
-        pid: [0],
-        meta: {
-          title: '',
-          icon: ''
-        },
-        component: 'layout/Layout'
-      },
+      formModel: {},
       editId: 0
     }
   },
@@ -190,7 +183,15 @@ export default {
       this.dialogTitle = '添加'
       this.editId = 0
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
+      this.$refs.dialogForm.resetForm()
+      this.formModel = {
+        pid: [0],
+        meta: {
+          title: '',
+          icon: ''
+        },
+        component: 'layout/Layout'
+      }
       })
     },
     handleEdit(data) {
