@@ -15,6 +15,14 @@ module.exports = {
         target: 'http://localhost:8000', 
         secure: false,  
         changeOrigin: true
+      },
+      '/image': {
+        target: 'http://localhost:8000', 
+        secure: false,  
+        changeOrigin: true,
+        pathRewrite: {
+          '^/image': '/upload'
+        }
       }
     },
 

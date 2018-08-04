@@ -7128,6 +7128,12 @@ uuid@^3.0.0, uuid@^3.1.0:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
 
+v-distpicker@^1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/v-distpicker/-/v-distpicker-1.0.17.tgz#4b12ba50723ca4daa2329395b56f8a228c189ee1"
+  dependencies:
+    vue "^2.5.16"
+
 validate-npm-package-license@^3.0.1:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/validate-npm-package-license/-/validate-npm-package-license-3.0.3.tgz#81643bcbef1bdfecd4623793dc4648948ba98338"
@@ -7227,6 +7233,10 @@ vue-template-es2015-compiler@^1.6.0:
 vue@2.5.10:
   version "2.5.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.10.tgz#dcd772e2594ba994145f2f09522149d9a1e7841a"
+
+vue@^2.5.16:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 
 vuedraggable@^2.16.0:
   version "2.16.0"

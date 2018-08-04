@@ -18,16 +18,23 @@
         <template slot-scope="{ data }" slot='status'>
             <el-tag> {{ data.status }} </el-tag>
         </template>
+        <template slot-scope="{ data }" slot='logo'>
+            <img :src="getImageUrl(data.logo)" class="logo-img" v-if='data.logo'>
+        </template>
         </table-list>
-        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="permission-form"
                 ref='dialogForm'
                 @do-form='saveData'
                 :form-rules='formRules'
                 :default-files='logo'
-                :pfrom-model='formModel'
-                :pform-columns='formColumns'></my-form>
+                :pform-model='formModel'
+                :pform-columns='formColumns'>
+                <template slot='area'>
+                  <v-distpicker :province="selectarea.province" :city="selectarea.city" :area="selectarea.district" @selected="onSelected"></v-distpicker>
+                </template>
+                </my-form>
         </el-dialog>
     </div>
 </template>
@@ -36,8 +43,10 @@
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
 import { fetchList, createCompany, updateCompany, deleteCompany } from '@/api/company'
+import VDistpicker from 'v-distpicker'
+import { getImageUrl } from '@/utils'
 export default {
-  components: { tableList, MyForm },
+  components: { tableList, MyForm, VDistpicker },
   data() {
     return {
       data: [],
@@ -50,11 +59,17 @@ export default {
           label: '上传LOGO',
           type: 'upload',
           props: {
-            action: '/api/upload/create',
-            limit: 1
-          }
-
-        }
+            action: '/api/upload',
+            limit: 1,
+            name: 'logo',
+            data: {
+              field: 'logo'
+            }
+          },
+          default: []
+        },
+        { name: 'area', label: '区域', hidden: true },
+        { name: 'address', label: '公司地址' },
       ],
       searchColumns: [
         { name: 'name', label: '公司名', props: { clearable: true }},
@@ -76,11 +91,20 @@ export default {
         page: 1,
         pageSize: 10
       },
-      formModel: {},
+      selectarea: {
+        province: '',
+        city: '',
+        district: ''
+      },
+      area: {},
+      formModel: {
+
+      },
       editDialog: false
     }
   },
   methods: {
+    getImageUrl,
     handleDelete(data) {
       deleteCompany(data).then((res) => {
         this.$message({
@@ -93,20 +117,40 @@ export default {
       })
     },
     handleAdd() {
+      console.log(this.$refs.dialogForm, 'aaa')
+      var validNameExist = (rule, value, callback) => {
+        callback(new Error('错误'))
+      }
+      this.formRules.area = [
+        {required: true, trigger: 'blur', validator: validNameExist}
+      ]
       this.editDialog = true
       this.dialogTitle = '添加'
+      this.logo = []
+      this.formModel = {}
+      this.selectarea = { province: "", city: "", district: "" }
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
-        this.formModel = {}
+        
+        //this.formModel = {}  
       })
     },
     handleEdit(data) {
-      console.log(data)
       this.editDialog = true
       this.dialogTitle = '编辑'
+      if(data.logo){
+        this.logo = [
+          { url: getImageUrl(data.logo), name: 'logo' }
+        ]
+      }else{
+        this.logo = []
+      }
+      let { province, city, district } = data
+      this.selectarea = { province, city, district }
+      //this.formModel = data
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
+        //this.$refs.dialogForm.resetForm()
         this.$refs.dialogForm.setFormModel(data)
+
       })
     },
     getList(query) {
@@ -135,7 +179,22 @@ export default {
     dialogOpen(val) {
       this.$nextTick(() => {
         console.log(this.$refs)
+        this.$refs.dialogForm.clearValidate()
       })
+    },
+    onSelected(data) {
+      console.log(data)
+      this.$refs.dialogForm.setFormModel(this.setArea(data))
+    },
+    setArea(data) {
+      return {
+        province: data.province.value,
+        city: data.city.value,
+        district: data.area.value,
+        province_code: data.province.code,
+        city_code: data.city.code,
+        district_code: data.area.code
+      }
     }
   },
   created() {
@@ -146,6 +205,10 @@ export default {
 <style lang="scss" >
    .table-layout .permission-form .el-input{
         width: 50%;
+    }
+    .logo-img{
+      width: 100px;
+      height: 100px;
     }
 </style>
 

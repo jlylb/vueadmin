@@ -86,6 +86,7 @@
                 v-if='myitem.type=="upload"'
                 @upload-success='uploadSuccess'
                 @remove-success='removeSuccess'
+                :file-list='pics'
                 :upload-props='myitem.props || {}'>
             </upload-form-column>
 </slot>
@@ -103,7 +104,8 @@ export default {
     return {
       formModel: this.pformModel,
       formColumns: this.pformColumns,
-      rules: this.formRules
+      rules: this.formRules,
+      pics: this.defaultFiles
     }
   },
   props: {
@@ -138,30 +140,29 @@ export default {
       }
     }
   },
-  provide() {
-    return {
-      pics: this.defaultFiles
-    }
-  },
   watch: {
     formRules(newVal) {
       console.log(newVal)
       this.rules = newVal
     },
     pformModel(newVal) {
-      console.log(newVal)
+      console.log(newVal,4444)
       this.formModel = newVal
     },
     pformColumns(newVal) {
       console.log(newVal)
       this.formColumns = newVal
+    },
+    defaultFiles(newVal) {
+      console.log(newVal)
+      this.pics = newVal
     }
   },
   methods: {
     onSubmit() {
       this.$refs[this.formName].validate((valid) => {
         if (valid) {
-          console.log(this.formModel)
+          console.log(this.formModel,77777)
           this.$emit('do-form', this.formModel)
         } else {
           console.log('error submit!!')
@@ -172,16 +173,20 @@ export default {
     resetForm() {
       this.$refs[this.formName].resetFields()
     },
+    clearValidate() {
+      this.$refs[this.formName].clearValidate()
+    },
     uploadSuccess(file, props) {
       const fieldName = props.name || 'file'
-      this.formModel[fieldName] = file.url
+      this.formModel[fieldName] = file.data.location
     },
     removeSuccess(file, props) {
       const fieldName = props.name || 'file'
       this.formModel[fieldName] = ''
+      this.pics = []
     },
     setFormModel(data) {
-      this.formModel = Object.assign(this.formModel, data)
+      this.formModel = Object.assign({},this.formModel, data)
     },
     getFormModel() {
       return this.formModel
@@ -201,10 +206,15 @@ export default {
     console.log(this.$refs)
     const items = {}
     this.formColumns.forEach((item) => {
-      items[item.name] = ''
+      if(!item.hidden){
+        items[item.name] = item.default || ''
+      }   
     })
+
+    console.log(items, this.formModel,"before")
     this.formModel = Object.assign(items, this.formModel)
-    console.log(this.formModel, 6666666)
+    console.log(this.formModel,"after")
+    
   }
 }
 </script>

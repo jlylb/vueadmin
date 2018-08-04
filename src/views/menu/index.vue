@@ -86,6 +86,9 @@ export default {
         { name: 'hidden', label: '隐藏菜单', type: 'checkbox', props: {
           trueLabel: 1, falseLabel: 0
         }},
+        { name: 'always_show', label: '总是显示菜单', type: 'checkbox', props: {
+          trueLabel: 1, falseLabel: 0
+        }},
         {
           name: 'route_name',
           label: '路由名称',

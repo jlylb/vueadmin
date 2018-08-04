@@ -7,9 +7,9 @@ export function fetchLogo() {
   })
 }
 
-export function createUser(data) {
+export function createLogo(data) {
   return request({
-    url: '/upload/create',
+    url: 'upload',
     method: 'post',
     data
   })

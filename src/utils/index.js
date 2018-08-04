@@ -1,6 +1,9 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
+export function getImageUrl(path) {
+  return '/image/' + path
+}
 
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {

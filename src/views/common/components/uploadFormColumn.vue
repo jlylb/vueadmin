@@ -8,7 +8,8 @@
   :on-exceed="handleExceed"
   :on-error='handleError'
   :before-upload='handleBeforeUpload'
-  :file-list="pics"
+  :file-list="fileList"
+  :headers='headers'
   v-bind="uploadProps">
   <i class="el-icon-plus"></i>
 </el-upload>
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import { getToken } from '@/utils/auth'
   export default {
     props: {
       uploadProps: {
@@ -26,15 +28,24 @@
         default() {
           return {}
         }
+      },
+      fileList: {
+        type: Array,
+        default() {
+          return []
+        }
       }
     },
     data() {
       return {
         dialogImageUrl: '',
-        dialogVisible: false
+        dialogVisible: false,
+        headers: {
+          Authorization: 'Bearer ' + getToken()
+        }
       }
     },
-    inject: ['pics'],
+    // inject: ['pics'],
     methods: {
       handleRemove(file, fileList) {
         console.log(file, fileList)
@@ -60,7 +71,7 @@
       }
     },
     created() {
-      console.log(this.$props, this.pics)
+
     }
   }
 </script>
