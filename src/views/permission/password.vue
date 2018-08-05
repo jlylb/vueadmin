@@ -5,16 +5,16 @@
             class='profile-form'
             ref='profileForm'
             @do-form='saveData'
-            @set-validate-rules='setRules'
             :form-rules='formRules'
-            :form-columns='formColumns'></my-form>
+            :form-props='formProps'
+            :pform-columns='formColumns'></my-form>
         </div>
     </div>    
 </template>
 
 <script>
 import MyForm from '../common/components/myform'
-import { fetchLogo } from '@/api/upload'
+import { modifyPassword } from '@/api/login'
 import { mapGetters } from 'vuex'
 export default {
   components: { MyForm },
@@ -42,27 +42,26 @@ export default {
         }
       ],
       formRules: {
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ],
-        new_password: [
-          { required: true, message: '请输入新密码', trigger: 'blur' }
-        ],
-        new_password_confirmation: [
-          { required: true, message: '请确认新密码', trigger: 'blur' }
-        ]
+      },
+      formProps: {
+        validateOnRuleChange: false
       }
     }
   },
   methods: {
-    saveData() {
-      this.$message({
-        type: 'success',
-        message: '保存成功'
+    saveData(data) {
+      modifyPassword(data)
+      .then((res) => {
+        this.$message({
+          type: 'success',
+          message: res.data.msg
+        })
+        this.$store.dispatch('FedLogOut').then(() => {
+            this.$router.push({path:'/login'})
+          })
       })
-    },
-    setRules(form, fromModel) {
-      console.log(form, fromModel)
+      .catch((res) => {
+      })
     }
   },
   computed: {
@@ -71,9 +70,47 @@ export default {
   created() {
 
   },
+
+  mounted() {
+    console.log(this.$refs.profileForm)
+      const form = this.$refs.profileForm
+      const model = form.getFormModel()
+      const validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入新密码'))
+        } else {
+          if (model.new_password !== '') {
+            form.validateField('new_password_confirmation')
+          }
+          callback();
+        }
+      }
+      const validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入确认新密码'));
+        } else if (value !== model.new_password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      }
+
+      this.formRules =  {
+        password: [
+          { required: true, message: '请输入密码', trigger: ['blur','change'] }
+        ],
+        new_password: [
+          { required: true, message: '请输入新密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        new_password_confirmation: [
+          { validator: validatePass2, trigger: 'blur' }
+        ]
+      }
+  },
   beforeCreate() {
     this.$nextTick(() => {
-      console.log(this.$refs.profileForm)
+      
     })
   }
 }

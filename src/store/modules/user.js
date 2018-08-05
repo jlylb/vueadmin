@@ -1,5 +1,6 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getImageUrl } from '@/utils'
 
 const user = {
   state: {
@@ -15,7 +16,8 @@ const user = {
       articlePlatform: []
     },
     companyName: '',
-    companyLogo: ''
+    companyLogo: '',
+    isget: false
   },
 
   mutations: {
@@ -48,6 +50,9 @@ const user = {
     },
     SET_COMPANY_NAME: (state, companyName) => {
       state.companyName = companyName
+    },
+    SET_IS_GET: (state, val) => {
+      state.isget = val
     }
   },
 
@@ -83,7 +88,7 @@ const user = {
           } // else {
           //   reject('getInfo: roles must be a non-null array !')
           // }
-
+          commit('SET_IS_GET', true)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)

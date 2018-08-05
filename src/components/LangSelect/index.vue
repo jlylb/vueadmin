@@ -45,6 +45,7 @@ export default {
     color: #fff;
     margin: 16px;
 }
+
 </style>
 
 

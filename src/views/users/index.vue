@@ -19,7 +19,7 @@
             <el-tag> {{ data.status }} </el-tag>
         </template>
           <template slot-scope="{ data }" slot='avatar'>
-            <img :src="data.avatar" />
+            <img :src="getImageUrl(data.avatar)" v-if='data.avatar' :style='{width: "100px", height: "100px"}'/>
         </template>
         <template slot='actionExtra' slot-scope="{ data }">
                 <el-button
@@ -64,6 +64,7 @@ import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
 import { fetchList, fetchRoles, saveRoles, createUser, updateUser, deleteUser } from '@/api/users'
 import axios from 'axios'
+import { getImageUrl } from '@/utils'
 export default {
   components: { tableList, MyForm },
   data() {
@@ -135,6 +136,7 @@ export default {
     }
   },
   methods: {
+    getImageUrl,
     handleAdd(data) {
       this.addDialog = true
       this.dialogTitle = '添加'

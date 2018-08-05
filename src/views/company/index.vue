@@ -32,7 +32,14 @@
                 :pform-model='formModel'
                 :pform-columns='formColumns'>
                 <template slot='area'>
-                  <v-distpicker :province="selectarea.province" :city="selectarea.city" :area="selectarea.district" @selected="onSelected"></v-distpicker>
+                  <v-distpicker 
+                  :province="selectarea.province" 
+                  :city="selectarea.city" 
+                  :area="selectarea.district"
+                  @province='selectProvince'
+                  @city='selectCity' 
+                  @area='selectArea'
+                  @selected="onSelected"></v-distpicker>
                 </template>
                 </my-form>
         </el-dialog>
@@ -117,13 +124,7 @@ export default {
       })
     },
     handleAdd() {
-      console.log(this.$refs.dialogForm, 'aaa')
-      var validNameExist = (rule, value, callback) => {
-        callback(new Error('错误'))
-      }
-      this.formRules.area = [
-        {required: true, trigger: 'blur', validator: validNameExist}
-      ]
+      this.setRules()
       this.editDialog = true
       this.dialogTitle = '添加'
       this.logo = []
@@ -135,8 +136,10 @@ export default {
       })
     },
     handleEdit(data) {
+      this.setRules()
       this.editDialog = true
       this.dialogTitle = '编辑'
+      console.log(data)
       if(data.logo){
         this.logo = [
           { url: getImageUrl(data.logo), name: 'logo' }
@@ -195,6 +198,35 @@ export default {
         city_code: data.city.code,
         district_code: data.area.code
       }
+    },
+    selectProvince(val) {
+      console.log(val)
+      this.selectarea.province = val.code?val.value:''
+      this.$refs.dialogForm.validateField('area')
+    },
+    selectCity(val) {
+      console.log(val)
+      this.selectarea.city = val.code?val.value:''
+      this.$refs.dialogForm.validateField('area')
+    },
+    selectArea(val) {
+      console.log(val)
+      this.selectarea.district = val.code?val.value:''
+      this.$refs.dialogForm.validateField('area')
+    },
+    setRules() {
+      console.log(this.$refs.dialogForm, 'aaa')
+      var validArea = (rule, value, callback) => {
+        if(!this.selectarea.province||!this.selectarea.city||!this.selectarea.district){
+          callback(new Error('请选择区域'))
+        }else{
+          callback()
+        }
+        
+      }
+      this.formRules.area = [
+        {required: true, trigger: 'blur', validator: validArea}
+      ]
     }
   },
   created() {

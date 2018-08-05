@@ -7,15 +7,17 @@
             @do-form='saveData'
             :form-rules='formRules'
             :default-files='logo'
-            :form-columns='formColumns'></my-form>
+            :pform-model='formModel'
+            :pform-columns='formColumns'></my-form>
         </div>
     </div>    
 </template>
 
 <script>
 import MyForm from '../common/components/myform'
-import { fetchLogo } from '@/api/upload'
 import { mapGetters } from 'vuex'
+import { saveUserInfo } from '@/api/login'
+import { getImageUrl } from '@/utils'
 export default {
   components: { MyForm },
   data() {
@@ -26,49 +28,68 @@ export default {
         { name: 'name', label: '用户名', props: { disabled: true }},
         {
           name: 'logo',
-          label: '上传LOGO',
+          label: '上传头像',
           type: 'upload',
           props: {
-            action: '/upload/create',
-            limit: 1
+            action: '/api/upload',
+            limit: 1,
+            name: 'logo',
+            data: {
+              field: 'logo'
+            }
           }
 
         }
       ],
       formRules: {
-        name: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ]
-      }
+
+      },
+      formModel: {}
     }
   },
   methods: {
-    saveData() {
-      this.$message({
-        type: 'success',
-        message: '保存成功'
-      })
+    saveData(data) {
+      saveUserInfo(data)
+        .then((res) => {
+          this.$message({
+            type: 'success',
+            message: res.data.msg
+          })
+          this.$store.commit('SET_AVATAR',data.logo)
+        })
+        .catch((res) => {
+        })
     }
   },
   computed: {
     ...mapGetters([
-      'companyLogo',
-      'companyName'
+      'avatar',
+      'name'
     ])
   },
   created() {
-    this.logo = [
+    let logo
+    if(this.avatar) {
+      logo = [
       {
-        name: this.companyName,
-        url: this.companyLogo
+        name: this.name,
+        url: getImageUrl(this.avatar)
       }
     ]
-    this.$nextTick(() => {
-      console.log(this.$refs)
-      this.$refs.profileForm.setFormModel({
-        name: this.companyName
-      })
-    })
+    } else {
+      logo = []
+    }
+    this.logo = logo
+    this.formModel = {
+      name: this.name,
+      logo: this.avatar
+    }
+    // this.$nextTick(() => {
+    //   console.log(this.$refs)
+    //   this.$refs.profileForm.setFormModel({
+    //     name: this.name
+    //   })
+    // })
   }
 }
 </script>

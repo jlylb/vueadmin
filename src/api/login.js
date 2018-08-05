@@ -46,10 +46,25 @@ export function logout() {
   })
 }
 
-export function getUserInfo(token) {
+export function getUserInfo() {
   return request({
-    url: 'auth/me',
+    url: 'auth/userinfo',
     method: 'get'
+  })
+}
+export function saveUserInfo(data) {
+  return request({
+    url: 'auth/userinfo',
+    method: 'put',
+    data
+  })
+}
+
+export function modifyPassword(data) {
+  return request({
+    url: 'auth/password',
+    method: 'put',
+    data
   })
 }
 

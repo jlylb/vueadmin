@@ -32,7 +32,7 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper short-cut-menu">
-          <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+          <img class="user-avatar" :src="getAvatar+'?imageView2/1/w/80/h/80'">
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -61,6 +61,7 @@ import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import ShortCut from './ShortCut'
+import { getImageUrl } from '@/utils'
 
 export default {
   components: {
@@ -84,9 +85,13 @@ export default {
       'avatar',
       'companyLogo',
       'companyName'
-    ])
+    ]),
+    getAvatar() {
+      return this.getImageUrl(this.avatar)
+    }
   },
   methods: {
+    getImageUrl,
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
@@ -98,6 +103,12 @@ export default {
   }
 }
 </script>
+<style lang='css'>
+  .international .short-item-icon .international-icon {
+    width: 48px;
+    height: 48px;
+  }
+</style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .sub-navbar{

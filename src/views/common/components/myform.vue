@@ -1,6 +1,10 @@
 <template>
-    <el-form  :model="formModel" class="my-form" :rules='rules'  label-width="100px"  :ref="formName">
-        <el-form-item :label="myitem.label || myitem.name" v-for='myitem in formColumns' :key='myitem.name' :prop='myitem.name'>
+    <el-form  :model="formModel" class="my-form" :rules='rules'  label-width="100px"  :ref="formName" v-bind="formProps">
+        <el-form-item 
+        :label="myitem.label || myitem.name" 
+        v-for='myitem in formColumns' 
+        :key='myitem.name' 
+        :prop='myitem.name'>
 <slot :name='myitem.name' :data='myitem' :fmodel='formModel'>
             <el-input v-model="formModel[myitem.name]" v-if='!myitem.type || myitem.type=="input"' v-bind='myitem.props||{}' :type='myitem.inputType||"text"'></el-input>
 
@@ -121,6 +125,12 @@ export default {
         return {}
       }
     },
+    formProps: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     formRules: {
       type: Object,
       default() {
@@ -142,8 +152,19 @@ export default {
   },
   watch: {
     formRules(newVal) {
-      console.log(newVal)
+      console.log(newVal, 77777777777)
       this.rules = newVal
+      this.$nextTick(()=>{
+        this.$refs[this.formName].fields.forEach((item)=>{
+          console.log(item.getRules())
+          const rules = item.getRules()
+          if (rules.length || item.required !== undefined) {
+            item.$on('el.form.blur', item.onFieldBlur)
+            item.$on('el.form.change', item.onFieldChange)
+          }
+        })
+      })
+
     },
     pformModel(newVal) {
       console.log(newVal,4444)
@@ -175,6 +196,9 @@ export default {
     },
     clearValidate() {
       this.$refs[this.formName].clearValidate()
+    },
+    validateField(field) {
+      this.$refs[this.formName].validateField(field)
     },
     uploadSuccess(file, props) {
       const fieldName = props.name || 'file'

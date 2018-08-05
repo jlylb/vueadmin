@@ -29,6 +29,7 @@ export const constantRouterMap = [
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
+
   {
     path: '/role_ability/:role',
     component:  () => import('@/views/permission/ability'),
@@ -48,7 +49,28 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/index'),
       name: 'dashboard',
       meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-    }]
+    },
+    {
+      path: '/password',
+      component: () => import('@/views/permission/password'),
+      name: 'password',
+      hidden: true,
+      meta: {
+        title: '修改密码'
+        // if do not set roles, means: this page does not require permission
+      }
+    },
+    {
+      path: '/permission/profile',
+      component: () => import('@/views/permission/profile'),
+      name: 'profile',
+      hidden: true,
+      meta: {
+        title: '个人中心'
+        // if do not set roles, means: this page does not require permission
+      }
+    }
+  ]
   },
   {
     path: '/alarm',
