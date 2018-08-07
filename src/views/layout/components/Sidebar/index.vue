@@ -11,7 +11,8 @@
       active-text-color="#409EFF"
     >
     <div class='logo-container'>
-        <img :src='companyLogo' class='logo'/>
+        <img :src='companyLogo' class='logo' v-if='companyLogo'/>
+        <img :src='logo()' v-else>
     </div>
       <sidebar-item v-for="route in permission_routers" :key="route.name" :item="route" :base-path="route.path"></sidebar-item>
     </el-menu>
@@ -21,6 +22,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import Logo from '@/assets/logo/logo.png'
 
 export default {
   components: { SidebarItem },
@@ -33,6 +35,11 @@ export default {
     ]),
     isCollapse() {
       return !this.sidebar.opened
+    }
+  },
+  methods: {
+    logo() {
+      return Logo
     }
   }
 }

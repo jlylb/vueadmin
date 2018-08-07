@@ -24,3 +24,19 @@ export default function checkPermission(value) {
   }
 }
 
+export function checkAbility(value) {
+  const roles = store.getters && store.getters.roles
+  if (roles.indexOf('superadmin') > -1) {
+    return true
+  }
+  const abilities = store.getters && store.getters.abilities
+  const permissionAbility = value
+  let hasPermission
+  if (permissionAbility) {
+    hasPermission = abilities.indexOf(permissionAbility) > -1
+  } else {
+    hasPermission = false
+  }
+  return hasPermission
+}
+

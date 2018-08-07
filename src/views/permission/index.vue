@@ -19,13 +19,14 @@
             <el-tag> {{ data.status }} </el-tag>
         </template>
         </table-list>
-        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="permission-form"
                 ref='dialogForm'
                 @do-form='saveData'
                 :form-rules='formRules'
                 :default-files='logo'
+                :pform-model='formModel'
                 :pform-columns='formColumns'></my-form>
         </el-dialog>
     </div>
@@ -35,6 +36,7 @@
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
 import { fetchList, createPermission, updatePermission, deletePermission } from '@/api/permission'
+import openMessage from '@/utils/message.js'
 export default {
   components: { tableList, MyForm },
   data() {
@@ -85,17 +87,16 @@ export default {
         page: 1,
         pageSize: 10
       },
-      editDialog: false
+      editDialog: false,
+      formModel: {}
     }
   },
   methods: {
     handleDelete(data) {
       deletePermission(data).then((res) => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+        openMessage(res).then(() => {
+          this.getList()
         })
-        this.getList()
       }).catch((err) => {
         console.log(err)
       })
@@ -103,16 +104,16 @@ export default {
     handleAdd() {
       this.editDialog = true
       this.dialogTitle = '添加'
-      this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
-      })
+      this.formModel = {}
+ 
     },
     handleEdit(data) {
       console.log(data)
       this.editDialog = true
       this.dialogTitle = '编辑'
+      // this.formModel = data
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
+        
         this.$refs.dialogForm.setFormModel(data)
       })
     },
@@ -130,18 +131,16 @@ export default {
       const method = data.id ? updatePermission : createPermission
       method(data)
         .then((res) => {
-          this.$message({
-            type: 'success',
-            message: res.data.msg
+          openMessage(res).then(() => {
+            this.getList()
           })
-          this.getList()
         })
         .catch((res) => {
         })
     },
     dialogOpen(val) {
       this.$nextTick(() => {
-        console.log(this.$refs)
+        this.$refs.dialogForm.clearValidate()
       })
     }
   },

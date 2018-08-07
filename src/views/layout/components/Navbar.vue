@@ -36,7 +36,7 @@
           <i class="el-icon-caret-bottom"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/permission/profile">
+          <router-link to="/auth/userinfo" v-if='checkAbility("api.auth.getUserInfo")'>
             <el-dropdown-item>
               {{$t('navbar.profile')}}
             </el-dropdown-item>
@@ -62,6 +62,7 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import ShortCut from './ShortCut'
 import { getImageUrl } from '@/utils'
+import { checkAbility } from '@/utils/permission'
 
 export default {
   components: {
@@ -91,6 +92,7 @@ export default {
     }
   },
   methods: {
+    checkAbility,
     getImageUrl,
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')

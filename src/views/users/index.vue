@@ -28,7 +28,7 @@
                 @click="handleRole(data)">授权</el-button>
         </template>
         </table-list>
-        <el-dialog :title="dialogTitle" :visible.sync="addDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="addDialog" @open='dialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="my-form"
                 ref='dialogForm'
@@ -38,7 +38,7 @@
                 :pform-columns='formColumns'></my-form>
         </el-dialog>
 
-        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='editDialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="my-form"
                 ref='editDialogForm'
@@ -48,7 +48,7 @@
                 :pform-columns='editFormColumns'></my-form>
         </el-dialog>
 
-        <el-dialog title="用户授权" :visible.sync="roleDialog" @open='roleDialogOpen'>
+        <el-dialog title="用户授权" :visible.sync="roleDialog" @open='roleDialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="my-form"
                 ref='roleForm'
@@ -65,6 +65,8 @@ import MyForm from '../common/components/myform'
 import { fetchList, fetchRoles, saveRoles, createUser, updateUser, deleteUser } from '@/api/users'
 import axios from 'axios'
 import { getImageUrl } from '@/utils'
+import openMessage from '@/utils/message.js'
+
 export default {
   components: { tableList, MyForm },
   data() {
@@ -140,18 +142,15 @@ export default {
     handleAdd(data) {
       this.addDialog = true
       this.dialogTitle = '添加'
+      this.userFormModel = {}
       this.editId = 0
-      this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
-      })
+
     },
     handleDelete(data) {
       deleteUser(data).then((res) => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+        openMessage(res).then(() => {
+          this.getList()
         })
-        this.getList()
       }).catch((err) => {
         console.log(err)
       })
@@ -162,7 +161,7 @@ export default {
       this.dialogTitle = '编辑'
       this.editUserFormModel = data
       this.$nextTick(() => {
-        this.$refs.editDialogForm.resetForm()
+
       })
     },
     getList(query) {
@@ -179,20 +178,23 @@ export default {
       const method = data.id ? updateUser : createUser
       method(data).then((res) => {
         console.log(res)
-        this.addDialog = false
-        this.editDialog = false
-        this.$message({
-          type: 'success',
-          message: '保存成功'
+        openMessage(res).then(() => {
+          this.addDialog = false
+          this.editDialog = false
+          this.getList()
         })
-        this.getList()
       }).catch((res) => {
         console.log(res)
       })
     },
     dialogOpen(val) {
       this.$nextTick(() => {
-        console.log(this.$refs)
+        this.$refs.dialogForm.clearValidate()
+      })
+    },
+    editDialogOpen(val) {
+      this.$nextTick(() => {
+        this.$refs.editDialogForm.clearValidate()
       })
     },
     handleRole(data) {
@@ -207,14 +209,15 @@ export default {
       })
     },
     roleDialogOpen() {
-
+      this.$nextTick(() => {
+        this.$refs.roleForm.clearValidate()
+      })
     },
     saveRoleData(data) {
       saveRoles(data).then((res) => {
-        this.roleDialog = false
-        this.$message({
-          type: 'success',
-          message: '授权成功'
+        openMessage(res).then(() => {
+          this.roleDialog = false
+          this.getList()
         })
       })
         .catch((res) => {

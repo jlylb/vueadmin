@@ -25,7 +25,7 @@
                 @click="handleButton(data)">按钮权限</el-button>
         </template>
         </table-list>
-        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="permission-form"
                 ref='dialogForm'
@@ -68,6 +68,8 @@ import { fetchList, createMenu, updateMenu, deleteMenu, fetchAllMenu, fetchMenu 
 import { getPermissiones } from '@/api/permission'
 import ability from '@/directive/ability/index.js'
 import { mapGetters } from 'vuex'
+import openMessage from '@/utils/message.js'
+
 export default {
   components: { tableList, MyForm, ButtonForm },
   directives: { ability },
@@ -131,7 +133,8 @@ export default {
           },
           data: [
 
-          ]
+          ],
+          default: []
         }
 
       ],
@@ -144,12 +147,15 @@ export default {
         }
       ],
       formRules: {
-        // route_path: [
-        //   { required: true, message: '请输入路由路径', trigger: 'blur' }
-        // ],
-        // route_name: [
-        //   { required: true, message: '请输入路由名称', trigger: 'blur' }
-        // ],
+        name: [
+          { required: true, message: '请输入菜单名称', trigger: 'blur' }
+        ],
+        route_name: [
+          { required: true, message: '请输入路由名称', trigger: 'blur' }
+        ],
+        route_path: [
+          { required: true, message: '请输入路由路径', trigger: 'blur' }
+        ],
         component: [
           { required: true, message: '请输入组件名称', trigger: 'blur' }
         ]
@@ -172,11 +178,9 @@ export default {
   methods: {
     handleDelete(data) {
       deleteMenu({ id: data.id }).then((res) => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+        openMessage(res).then(() => {
+          this.getList()
         })
-        this.getList()
       }).catch((err) => {
         console.log(err)
       })
@@ -186,7 +190,6 @@ export default {
       this.dialogTitle = '添加'
       this.editId = 0
       this.$nextTick(() => {
-      this.$refs.dialogForm.resetForm()
       this.formModel = {
         pid: [0],
         meta: {
@@ -203,7 +206,6 @@ export default {
       this.dialogTitle = '编辑'
       this.editId = data.id
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
         try {
           data.meta = data.meta && JSON.parse(data.meta) || this.formModel.meta
         } catch (e) {
@@ -225,16 +227,14 @@ export default {
       })
     },
     saveData(data) {
-      this.editDialog = false
       const method = data.id ? updateMenu : createMenu
       method(data)
         .then((res) => {
           console.log(res, 'save data success')
-          this.$message({
-            type: 'success',
-            message: res.data.msg
+          openMessage(res).then(() => {
+            this.editDialog = false
+            this.getList()
           })
-          this.getList()
         })
         .catch((res) => {
           console.log(res, 'save data error')
@@ -257,6 +257,7 @@ export default {
       })
       this.$nextTick(() => {
         console.log(this.$refs)
+        this.$refs.dialogForm.clearValidate()
       })
     },
 

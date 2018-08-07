@@ -1,22 +1,29 @@
 
 import store from '@/store'
 
+function checkAbility(value) {
+  const roles = store.getters && store.getters.roles
+  if (roles.indexOf('superadmin') > -1) {
+    return true
+  }
+  const abilities = store.getters && store.getters.abilities
+  const permissionAbility = value
+  let hasPermission
+  if (permissionAbility) {
+    hasPermission = abilities.indexOf(permissionAbility) > -1
+  } else {
+    hasPermission = false
+  }
+  return hasPermission
+}
+
+// if (!hasPermission) {
+//   el.parentNode && el.parentNode.removeChild(el)
+// }
 export default{
   inserted(el, binding, vnode) {
-    // const { value } = binding
-    // const abilities = store.getters && store.getters.abilities
-    // console.log(value, 99999)
-    // const permissionAbility = value
-    // let hasPermission
-    // if (permissionAbility) {
-    //   hasPermission = abilities.indexOf(permissionAbility) > -1
-    // } else {
-    //   hasPermission = false
-    // }
-    // // if (!hasPermission) {
-    // //   el.parentNode && el.parentNode.removeChild(el)
-    // // }
-    // el.style.display = hasPermission ? 'inline-block' : 'none'
+    const { value } = binding
+    el.style.display = checkAbility(value) ? 'inline-block' : 'none'
   },
   update(el, binding) {
     const { value, oldValue } = binding
@@ -24,17 +31,6 @@ export default{
     if (value === oldValue) {
       return false
     }
-    const abilities = store.getters && store.getters.abilities
-    const permissionAbility = value
-    let hasPermission
-    if (permissionAbility) {
-      hasPermission = abilities.indexOf(permissionAbility) > -1
-    } else {
-      hasPermission = false
-    }
-    // if (!hasPermission) {
-    //   el.parentNode && el.parentNode.removeChild(el)
-    // }
-    el.style.display = hasPermission ? 'inline-block' : 'none'
+    el.style.display = checkAbility(value) ? 'inline-block' : 'none'
   }
 }

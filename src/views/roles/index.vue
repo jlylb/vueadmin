@@ -25,7 +25,7 @@
             @click="handleRoleAbility(data)">授权</el-button>
         </template>
         </table-list>
-        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen'>
+        <el-dialog :title="dialogTitle" :visible.sync="editDialog" @open='dialogOpen' :close-on-click-modal='false'>
             <my-form
                 class="my-form"
                 ref='dialogForm'
@@ -49,6 +49,8 @@
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
 import { fetchList, fetchRoleAlibity, createRole, updateRole, deleteRole } from '@/api/roles'
+import openMessage from '@/utils/message.js'
+
 export default {
   components: { tableList, MyForm },
   data() {
@@ -102,17 +104,13 @@ export default {
       this.dialogTitle = '添加'
       this.userFormModel = {}
       this.editId = 0
-      this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
-      })
+
     },
     handleDelete(data) {
       deleteRole(data).then((res) => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+        openMessage(res).then(() => {
+          this.getList()
         })
-        this.getList()
       }).catch((err) => {
         console.log(err)
       })
@@ -121,9 +119,7 @@ export default {
       console.log(data)
       this.editDialog = true
       this.dialogTitle = '编辑'
-      
       this.$nextTick(() => {
-        this.$refs.dialogForm.resetForm()
         this.userFormModel = data
       })
     },
@@ -139,43 +135,35 @@ export default {
     saveData(data) {
       const method = data.id ? updateRole : createRole
       method(data).then((res) => {
-        this.editDialog = false
-        this.$message({
-          type: 'success',
-          message: '保存成功'
+        openMessage(res).then(() => {
+          this.editDialog = false
+          this.getList()
         })
-        this.getList()
       }).catch((res) => {
         console.log(res)
       })
     },
     dialogOpen(val) {
       this.$nextTick(() => {
-        console.log(this.$refs)
+        this.$refs.dialogForm.clearValidate()
       })
     },
     handleRoleAbility(data) {
-      // this.roleDialog = true
-      // fetchRoleAlibity( data.id ).then((res) => {
-
-      // }).catch((res) => {
-      //     console.log(res)
-      // })
       console.log(data)
-      this.$router.push({ name: 'permission_role_ability', params: { role: data.name }})
+      this.$router.push({ name: 'api.roles.ability', params: { role: data.name }})
     },
     roleDialogOpen() {
-
+      this.$nextTick(() => {
+        this.$refs.roleForm.clearValidate()
+      })
     },
     saveRoleData(data) {
       saveRoles(data).then((res) => {
-        this.roleDialog = false
-        this.$message({
-          type: 'success',
-          message: '授权成功'
+        openMessage(res).then(() => {
+          this.roleDialog = false
+          this.getList()
         })
-      })
-        .catch((res) => {
+      }).catch((res) => {
           console.log(res)
         })
     }

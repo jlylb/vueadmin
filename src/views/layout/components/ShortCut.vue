@@ -6,28 +6,31 @@
       </div>
     </el-tooltip>
     <el-tooltip effect="dark" :content="'权限设置'" placement="bottom">
-      <div class='short-cut-item'>
-        <svg-icon icon-class="privillege" class-name="short-cut-icon" @click.native='openShort("api.permission.index")'/>
+      <div class='short-cut-item' v-ability='"api.permission.index"'>
+        <svg-icon icon-class="privillege" class-name="short-cut-icon" @click.native='openShort("/permission/index")'/>
       </div>
     </el-tooltip>
       <el-tooltip effect="dark" :content="'修改密码'" placement="bottom">  
-      <div class='short-cut-item'>
-        <svg-icon icon-class="password" class-name="short-cut-icon" @click.native='openShort("password")'/>
+      <div class='short-cut-item' v-ability='"api.auth.modifyPassword"'>
+        <svg-icon icon-class="password" class-name="short-cut-icon" @click.native='openShort("/auth/password")'/>
       </div>
      </el-tooltip> 
       <el-tooltip effect="dark" :content="'消息通知'" placement="bottom">  
       <div class='short-cut-item'>
-        <svg-icon icon-class="message" class-name="short-cut-icon" @click.native='openShort("notice_index")'/>
+        <svg-icon icon-class="message" class-name="short-cut-icon" @click.native='openShort("/notice/index")'/>
       </div>
     </el-tooltip>   
   </div>  
 </template>
 
 <script>
+import ability from '@/directive/ability/index.js'
+
 export default{
+  directives: { ability },
   methods: {
     openShort(name) {
-      this.$router.push({ name: name })
+      this.$router.push({ path: name })
     }
   }
 }
