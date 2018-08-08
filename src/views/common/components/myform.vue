@@ -11,6 +11,7 @@
             <el-select 
             v-model="formModel[myitem.name]" 
             v-if='myitem.type=="select"' 
+            v-on="myitem.events||{}"
             v-bind='myitem.props||{}'>
                 <el-option
                 v-for="item in myitem.data"

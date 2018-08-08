@@ -54,3 +54,11 @@ export function deleteUser(data) {
     method: 'delete'
   })
 }
+
+export function getCompany(data) {
+  return request({
+    url: 'company/' + data + '/search',
+    method: 'get'
+  })
+}
+

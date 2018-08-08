@@ -18,6 +18,7 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   abilities: state => state.permission.abilities,
   meta: state => state.permission.meta,
-  isget: state => state.user.isget
+  isget: state => state.user.isget,
+  notification: state => state.user.notification
 }
 export default getters

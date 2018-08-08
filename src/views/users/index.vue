@@ -18,6 +18,9 @@
         <template slot-scope="{ data }" slot='status'>
             <el-tag> {{ data.status }} </el-tag>
         </template>
+        <template slot-scope="{ data }" slot='company'>
+             {{ data.company && data.company.name ||'' }}
+        </template>
           <template slot-scope="{ data }" slot='avatar'>
             <img :src="getImageUrl(data.avatar)" v-if='data.avatar' :style='{width: "100px", height: "100px"}'/>
         </template>
@@ -62,7 +65,7 @@
 <script>
 import tableList from '../common/components/tableList'
 import MyForm from '../common/components/myform'
-import { fetchList, fetchRoles, saveRoles, createUser, updateUser, deleteUser } from '@/api/users'
+import { fetchList, fetchRoles, saveRoles, createUser, updateUser, deleteUser, getCompany } from '@/api/users'
 import axios from 'axios'
 import { getImageUrl } from '@/utils'
 import openMessage from '@/utils/message.js'
@@ -77,11 +80,48 @@ export default {
         { name: 'name', label: '用户名' },
         { name: 'email', label: '邮箱' },
         { name: 'password', label: '密码', inputType: 'password', type: 'input' },
-        { name: 'password_confirmation', label: '确认密码', inputType: 'password', type: 'input' }
+        { name: 'password_confirmation', label: '确认密码', inputType: 'password', type: 'input' },
+        {
+          name: 'company_id',
+          label: '所属公司',
+          type: 'select',
+          props: {
+            filterable: true,
+            remote: true,
+            remoteMethod: this.remoteRoute,
+            placeholder: '请输入公司名称',
+            class: 'select-company_id',
+            clearable: true,
+            allowCreate: false
+          },
+          data: [
+
+          ]
+        },
       ],
       editFormColumns: [
         { name: 'name', label: '用户名' },
-        { name: 'email', label: '邮箱' }
+        { name: 'email', label: '邮箱' },
+        {
+          name: 'company_name',
+          label: '所属公司',
+          type: 'select',
+          props: {
+            filterable: true,
+            remote: true,
+            remoteMethod: this.remoteEditRoute,
+            placeholder: '请输入公司名称',
+            class: 'select-company_id',
+            clearable: true,
+            allowCreate: false
+          },
+          events: {
+            change: this.editChange
+          },
+          data: [
+
+          ]
+        },
       ],
       searchColumns: [
         { name: 'name', label: '用户名', props: { clearable: true }},
@@ -110,9 +150,37 @@ export default {
         email: [
           { required: true, message: '邮箱不能为空', trigger: 'blur' },
           { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
-        ]
+        ],
       },
       columns: {
+        id: {
+          label: '编号'
+        },
+        name: {
+          label: '用户名称'
+        },
+        email: {
+          label: '用户邮箱'
+        },
+        avatar: {
+          label: '用户头像'
+        },
+        company: {
+          label: '所属公司'
+        },
+        created_at: {
+           label: '创建时间',
+        },
+        updated_at: {
+           label: '更新时间'
+        },
+        action: {
+          'min-width': '150',
+          label: '操作'
+        },
+        company_id: {
+          hidden: true
+        }
       },
       total: 0,
       search: {
@@ -134,7 +202,8 @@ export default {
           ]
         }
       ],
-      dialogTitle: ''
+      dialogTitle: '',
+      company_id: null
     }
   },
   methods: {
@@ -159,6 +228,9 @@ export default {
       // console.log(data)
       this.editDialog = true
       this.dialogTitle = '编辑'
+      console.log(data.company)
+      this.company_id = null
+      data.company_name = data.company&&data.company.name||''
       this.editUserFormModel = data
       this.$nextTick(() => {
 
@@ -176,6 +248,9 @@ export default {
     },
     saveData(data) {
       const method = data.id ? updateUser : createUser
+      if(this.company_id) {
+        data.company_id = this.company_id
+      }
       method(data).then((res) => {
         console.log(res)
         openMessage(res).then(() => {
@@ -193,6 +268,7 @@ export default {
       })
     },
     editDialogOpen(val) {
+
       this.$nextTick(() => {
         this.$refs.editDialogForm.clearValidate()
       })
@@ -223,6 +299,42 @@ export default {
         .catch((res) => {
           console.log(res)
         })
+    },
+    remoteRoute(query) {
+      getCompany(query, {}).then((res) => {
+        console.log(res)
+        const columns = this.formColumns
+        columns.map((item) => {
+          if (item.name == 'company_id') {
+            item.data = res.data.data
+            return item
+          }
+        })
+        this.formColumns = columns
+      }).catch((res) => {
+        console.log(res)
+      })
+    },
+    remoteEditRoute(query) {
+      getCompany(query, {}).then((res) => {
+        console.log(res)
+        const columns = this.editFormColumns
+        columns.map((item) => {
+          if (item.name == 'company_name') {
+            item.data = res.data.data
+            return item
+          }
+        })
+        this.editFormColumns = columns
+      }).catch((res) => {
+        console.log(res)
+      })
+    },
+    editChange(val) {
+      if(!val) {
+        return 
+      }
+      this.company_id = val
     }
   },
   created() {
@@ -233,6 +345,9 @@ export default {
 <style lang="scss">
    .table-layout .my-form .el-input{
         width: 50%;
+    }
+    .select-company_id {
+      width: 100%;
     }
 </style>
 

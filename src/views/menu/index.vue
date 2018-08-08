@@ -161,9 +161,46 @@ export default {
         ]
       },
       columns: {
+        id: {
+          label: '编号'
+        },
+        pid: {
+          label: '上级菜单'
+        },
+        route_path: {
+          label: '路由路径'
+        },
+        route_name: {
+          label: '路由名称'
+        },
+        component: {
+          label: '组件名称'
+        },
+        redirect: {
+          label: '跳转路径'
+        },
+        meta: {
+          label: '属性'
+        },
+        path: {
+          hidden: true
+        },
+        route_name: {
+          label: '路由名称'
+        },
+        component: {
+          label: '组件名称'
+        },
+        created_at: {
+           label: '创建时间',
+        },
+        updated_at: {
+           label: '更新时间'
+        },
         action: {
-          minWidth: '200px'
-        }
+          'min-width': '150',
+          label: '操作'
+        },
       },
       total: 0,
       search: {

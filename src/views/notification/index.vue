@@ -59,9 +59,42 @@ export default {
       ],
 
       columns: {
+        id: {
+          label: '编号'
+        },
+        type: {
+          label: '通知类型'
+        },
+        type: {
+          label: '通知类型'
+        },
+        notifiable_id: {
+          label: '接收人ID'
+        },
+        name: {
+          label: '接收人'
+        },
+        notifiable_type: {
+          label: '接收类型',
+          hidden: true
+        },
+        data: {
+           label: '消息内容',
+        },
+        read_at: {
+           label: '阅读时间',
+        },
+        created_at: {
+           label: '发送时间',
+        },
+        updated_at: {
+           label: '更新时间',
+           hidden: true
+        },
         action: {
-          'min-width': '150'
-        }
+          'min-width': '150',
+          label: '操作'
+        },
       },
       total: 0,
       search: {

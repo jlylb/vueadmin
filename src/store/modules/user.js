@@ -1,6 +1,5 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { getImageUrl } from '@/utils'
 
 const user = {
   state: {
@@ -17,7 +16,8 @@ const user = {
     },
     companyName: '',
     companyLogo: '',
-    isget: false
+    isget: false,
+    notification: 0
   },
 
   mutations: {
@@ -53,6 +53,9 @@ const user = {
     },
     SET_IS_GET: (state, val) => {
       state.isget = val
+    },
+    SET_NOTIFICATION: (state, val) => {
+      state.notification = val
     }
   },
 
@@ -94,6 +97,7 @@ const user = {
           commit('SET_INTRODUCTION', data.introduction)
           commit('SET_COMPANY_LOGO', data.company_logo)
           commit('SET_COMPANY_NAME', data.company_name)
+          commit('SET_NOTIFICATION', data.notification)
           resolve(response)
         }).catch(error => {
           reject(error)

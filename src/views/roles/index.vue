@@ -67,7 +67,7 @@ export default {
         { name: 'name', label: '角色名', props: { clearable: true }},
         {
           name: 'created_at',
-          label: '发送时间',
+          label: '创建时间',
           type: 'date'
         }
       ],
@@ -80,9 +80,31 @@ export default {
         ]
       },
       columns: {
+        id: {
+          label: '编号'
+        },
+        name: {
+          label: '角色名称'
+        },
+        title: {
+          label: '角色描述'
+        },
+        scope: {
+          label: '区域'
+        },
+        level: {
+           hidden: true
+        },
+        created_at: {
+           label: '创建时间',
+        },
+        updated_at: {
+           label: '更新时间'
+        },
         action: {
-          'min-width': '150'
-        }
+          'min-width': '150',
+          label: '操作'
+        },
       },
       total: 0,
       search: {

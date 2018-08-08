@@ -48,20 +48,37 @@ export default {
       if (this.data.length === 0) {
         return
       }
-      const firstData = this.data[0]
-      firstData.action = ''
-      let extract = {}
-      for (const item in firstData) {
-        if (this.customColumns[item]) {
-          extract = this.customColumns[item]
+      if (Object.keys(this.customColumns).length === 0) {
+        const firstData = this.data[0]
+        firstData.action = ''
+        let extract
+        for (const item in firstData) {
+          if (this.customColumns[item]) {
+            extract = this.customColumns[item]
+          } else {
+            extract = {}
+          }
+          if (extract.hidden !== true) {
+            this.columns.push(
+              Object.assign(
+                { prop: item, label: item },
+                extract
+              )
+            )
+          }
         }
-        this.columns.push(
-          Object.assign(
-            { prop: item, label: item },
-            extract
-          )
-        )
+      } else {
+        for (const item in this.customColumns) {
+          if (this.customColumns[item].hidden !== true) {
+            this.columns.push(
+              Object.assign(
+                { prop: item }, this.customColumns[item]
+              )
+            )
+          }
+        }
       }
+
       console.log(this.columns)
     },
     handleExport(columns) {
